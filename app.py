@@ -767,7 +767,7 @@ def login():
         st.markdown(
             """
             <div class="footer-note">
-                IDFS Web Platform demonstration prototype
+                 Aksum University, Technology Transfer Project (2026)
             </div>
             """,
             unsafe_allow_html=True,
