@@ -413,4 +413,4 @@ def main():
     elif page=="Audit Trail": audit_page()
     elif page=="User Administration": users_page()
 
-if __name__=="__main__": ma
+if __name__=="__main__": main()
