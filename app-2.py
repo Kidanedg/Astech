@@ -9,14 +9,37 @@ from pathlib import Path
 import pandas as pd
 
 # ============================================================
-# IDFS WEB PLATFORM - SINGLE FILE DEMONSTRATION
+# IDFS WEB PLATFORM - ENHANCED SINGLE FILE DEMONSTRATION
 # Indigenous Digital Financial System
-# Aksum University | Technology Transfer Project Team | 2026
+#
+# Core modules:
+# 1. Database and Configuration
+# 2. Authentication
+# 3. Executive Dashboard
+# 4. Branch Management
+# 5. Member Management
+# 6. IDFS Equb Savings and Rounds
+# 7. IDFS Iddir Risk Sharing and Property
+# 8. Transactions
+# 9. Reports and Analytics
+# 10. Audit Trail
+# 11. User Administration
+#
+# Enhanced Equb features:
+# - Contribution amount captured during member registration
+# - Monthly / round contribution plan
+# - Member-level round contributions
+# - Contribution history and payment consistency
+# - Weighted-mean contribution score
+# - Contribution-weighted probability
+# - Trust-adjusted probability
+# - Transparent probability explanation
+# - Simulation / demonstration draw
 # ============================================================
 
 st.set_page_config(
     page_title="IDFS Web Platform",
-    page_icon="🏦",
+    page_icon="IDFS",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -28,188 +51,59 @@ ROLES = ["Administrator", "Branch Manager", "Finance Officer", "Member"]
 
 EVENT_TYPES = [
     "Funeral", "Wedding", "Holiday", "Emergency",
-    "Medical Support", "Family Support", "Other"
+    "Medical Support", "Family Support", "Other",
 ]
 
 PROPERTY_TYPES = [
     "Land", "Building", "Vehicle", "Equipment",
-    "Furniture", "Office Asset", "Other"
+    "Furniture", "Office Asset", "Other",
 ]
 
 # ============================================================
 # APPLICATION STYLE
 # ============================================================
 
-st.markdown("""
-<style>
-/* ---------- Global ---------- */
-.stApp {
-    background: linear-gradient(135deg, #F7F9FC 0%, #EEF4FA 100%);
-}
-.main-title {
-    font-size: 2rem;
-    font-weight: 750;
-    color: #163A5F;
-    margin-bottom: .15rem;
-}
-.sub-title {
-    font-size: .95rem;
-    color: #64748B;
-    margin-bottom: 1.2rem;
-}
-.section-card {
-    padding: 1.1rem 1.3rem;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    background: #FFFFFF;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 16px rgba(15,35,55,.04);
-}
-.module-label {
-    color: #0B5CAD;
-    font-weight: 750;
-    font-size: .82rem;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-}
-.metric-note {
-    color: #64748B;
-    font-size: .82rem;
-}
-.footer-note {
-    text-align: center;
-    color: #64748B;
-    font-size: .76rem;
-    margin-top: 1.8rem;
-}
-
-/* ---------- Login ---------- */
-.login-shell {
-    max-width: 1080px;
-    margin: 3vh auto 0 auto;
-}
-.login-brand-panel {
-    background: linear-gradient(145deg, #0B5CAD 0%, #163A5F 72%, #243447 100%);
-    border-radius: 24px;
-    padding: 3.0rem 3.0rem 2.5rem 3.0rem;
-    color: white;
-    min-height: 510px;
-    box-shadow: 0 20px 55px rgba(11,92,173,.20);
-    position: relative;
-    overflow: hidden;
-}
-.login-brand-panel:after {
-    content: "";
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 50%;
-    right: -120px;
-    bottom: -130px;
-}
-.login-brand-panel:before {
-    content: "";
-    position: absolute;
-    width: 180px;
-    height: 180px;
-    border: 1px solid rgba(255,255,255,.10);
-    border-radius: 50%;
-    right: 40px;
-    top: -90px;
-}
-.idfs-emblem {
-    width: 78px;
-    height: 78px;
-    border-radius: 20px;
-    background: rgba(255,255,255,.14);
-    border: 1px solid rgba(255,255,255,.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.35rem;
-    margin-bottom: 1.4rem;
-}
-.login-brand {
-    font-size: 2.8rem;
-    font-weight: 850;
-    letter-spacing: .08em;
-    margin: 0;
-}
-.login-expansion {
-    font-size: 1rem;
-    font-weight: 650;
-    margin-top: .25rem;
-    opacity: .96;
-}
-.login-tagline {
-    font-size: 1.05rem;
-    line-height: 1.65;
-    margin-top: 1.5rem;
-    color: rgba(255,255,255,.88);
-}
-.login-feature {
-    margin-top: 1.35rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid rgba(255,255,255,.18);
-    font-size: .88rem;
-    line-height: 1.8;
-    color: rgba(255,255,255,.84);
-}
-.login-right {
-    background: rgba(255,255,255,.98);
-    border: 1px solid #D9E2EC;
-    border-radius: 24px;
-    padding: 2.5rem 2.7rem;
-    min-height: 510px;
-    box-shadow: 0 20px 55px rgba(15,35,55,.10);
-}
-.login-heading {
-    color: #163A5F;
-    font-size: 1.75rem;
-    font-weight: 800;
-    margin-bottom: .25rem;
-}
-.login-caption {
-    color: #64748B;
-    font-size: .9rem;
-    margin-bottom: 1.5rem;
-}
-.login-security {
-    margin-top: 1.15rem;
-    padding: .75rem 1rem;
-    background: #F1F7FC;
-    border: 1px solid #DCEAF7;
-    border-radius: 10px;
-    color: #496274;
-    font-size: .78rem;
-}
-.login-copyright {
-    text-align: center;
-    color: #64748B;
-    font-size: .74rem;
-    margin-top: 1.2rem;
-    line-height: 1.6;
-}
-.login-demo {
-    margin-top: .75rem;
-    padding: .65rem .85rem;
-    border-radius: 9px;
-    background: #FFF8E8;
-    border: 1px solid #F2D58A;
-    color: #765C16;
-    font-size: .78rem;
-}
-.stButton > button[kind="primary"] {
-    border-radius: 10px;
-    font-weight: 700;
-}
-</style>
-""", unsafe_allow_html=True)
-
+st.markdown(
+    """
+    <style>
+    .main-title {
+        font-size: 2.0rem;
+        font-weight: 700;
+        color: #163A5F;
+        margin-bottom: 0.15rem;
+    }
+    .sub-title {
+        font-size: 0.95rem;
+        color: #64748B;
+        margin-bottom: 1.2rem;
+    }
+    .section-card {
+        padding: 1.1rem 1.3rem;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        background: #F8FAFC;
+        margin-bottom: 1rem;
+    }
+    .module-label {
+        color: #0B5CAD;
+        font-weight: 700;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .footer-note {
+        text-align: center;
+        color: #64748B;
+        font-size: 0.78rem;
+        margin-top: 2rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ============================================================
-# DATABASE UTILITIES
+# MODULE 1: DATABASE AND CONFIGURATION
 # ============================================================
 
 def now():
@@ -279,9 +173,10 @@ def audit(action, module="Portal", details=""):
     try:
         username = st.session_state.get("username", "anonymous")
         sql(
-            """INSERT INTO audit_log
-               (username,module,action,details,timestamp)
-               VALUES(?,?,?,?,?)""",
+            """
+            INSERT INTO audit_log(username,module,action,details,timestamp)
+            VALUES(?,?,?,?,?)
+            """,
             (username, module, action, details, now()),
         )
     except Exception:
@@ -313,193 +208,234 @@ def ensure_column(table_name, column, definition):
 
 def init_db():
     c = conn()
-    c.executescript("""
-    CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        full_name TEXT NOT NULL,
-        role TEXT NOT NULL,
-        module TEXT NOT NULL,
-        branch_id INTEGER,
-        active INTEGER DEFAULT 1,
-        created_at TEXT NOT NULL
-    );
+    c.executescript(
+        """
+        CREATE TABLE IF NOT EXISTS users(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            role TEXT NOT NULL,
+            module TEXT NOT NULL,
+            branch_id INTEGER,
+            active INTEGER DEFAULT 1,
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS branches(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        code TEXT UNIQUE NOT NULL,
-        name TEXT NOT NULL,
-        module TEXT NOT NULL,
-        location TEXT,
-        manager TEXT,
-        phone TEXT,
-        status TEXT DEFAULT 'Active',
-        created_at TEXT NOT NULL
-    );
+        CREATE TABLE IF NOT EXISTS branches(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            module TEXT NOT NULL,
+            location TEXT,
+            manager TEXT,
+            phone TEXT,
+            status TEXT DEFAULT 'Active',
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS members(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        member_no TEXT UNIQUE NOT NULL,
-        full_name TEXT NOT NULL,
-        phone TEXT,
-        sex TEXT,
-        join_date TEXT,
-        module TEXT NOT NULL,
-        branch_id INTEGER,
-        regular_contribution REAL DEFAULT 0,
-        trust_score REAL DEFAULT 0.5,
-        status TEXT DEFAULT 'Active',
-        address TEXT,
-        notes TEXT,
-        created_at TEXT NOT NULL
-    );
+        CREATE TABLE IF NOT EXISTS members(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            member_no TEXT UNIQUE NOT NULL,
+            full_name TEXT NOT NULL,
+            phone TEXT,
+            sex TEXT,
+            join_date TEXT,
+            module TEXT NOT NULL,
+            branch_id INTEGER,
+            regular_contribution REAL DEFAULT 0,
+            contribution_frequency TEXT DEFAULT 'Monthly',
+            target_round_contribution REAL DEFAULT 0,
+            trust_score REAL DEFAULT 0.5,
+            status TEXT DEFAULT 'Active',
+            address TEXT,
+            notes TEXT,
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS equb_rounds(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        branch_id INTEGER,
-        round_no INTEGER,
-        contribution_amount REAL,
-        start_date TEXT,
-        draw_date TEXT,
-        expected_members INTEGER,
-        total_pool REAL DEFAULT 0,
-        winner_member_id INTEGER,
-        status TEXT DEFAULT 'Open',
-        created_at TEXT NOT NULL
-    );
+        CREATE TABLE IF NOT EXISTS equb_rounds(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            branch_id INTEGER,
+            round_no INTEGER,
+            contribution_amount REAL,
+            start_date TEXT,
+            draw_date TEXT,
+            expected_members INTEGER,
+            total_pool REAL DEFAULT 0,
+            winner_member_id INTEGER,
+            status TEXT DEFAULT 'Open',
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS contributions(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        member_id INTEGER,
-        module TEXT,
-        round_id INTEGER,
-        amount REAL,
-        contribution_date TEXT,
-        status TEXT DEFAULT 'Paid',
-        reference TEXT,
-        payment_method TEXT,
-        notes TEXT,
-        created_at TEXT NOT NULL
-    );
+        CREATE TABLE IF NOT EXISTS contributions(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            member_id INTEGER,
+            module TEXT,
+            round_id INTEGER,
+            amount REAL,
+            contribution_date TEXT,
+            status TEXT DEFAULT 'Paid',
+            reference TEXT,
+            payment_method TEXT,
+            notes TEXT,
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS iddir_events(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        branch_id INTEGER,
-        event_type TEXT,
-        member_id INTEGER,
-        event_date TEXT,
-        description TEXT,
-        requested_amount REAL DEFAULT 0,
-        approved_amount REAL DEFAULT 0,
-        status TEXT DEFAULT 'Pending',
-        payment_date TEXT,
-        reference TEXT,
-        created_at TEXT NOT NULL
-    );
+        CREATE TABLE IF NOT EXISTS iddir_events(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            branch_id INTEGER,
+            event_type TEXT,
+            member_id INTEGER,
+            event_date TEXT,
+            description TEXT,
+            requested_amount REAL DEFAULT 0,
+            approved_amount REAL DEFAULT 0,
+            status TEXT DEFAULT 'Pending',
+            payment_date TEXT,
+            reference TEXT,
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS properties(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        branch_id INTEGER,
-        property_code TEXT UNIQUE,
-        property_type TEXT,
-        description TEXT,
-        location TEXT,
-        acquisition_date TEXT,
-        acquisition_cost REAL DEFAULT 0,
-        current_value REAL DEFAULT 0,
-        status TEXT DEFAULT 'Active',
-        custodian TEXT,
-        notes TEXT,
-        created_at TEXT NOT NULL
-    );
+        CREATE TABLE IF NOT EXISTS properties(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            branch_id INTEGER,
+            property_code TEXT UNIQUE,
+            property_type TEXT,
+            description TEXT,
+            location TEXT,
+            acquisition_date TEXT,
+            acquisition_cost REAL DEFAULT 0,
+            current_value REAL DEFAULT 0,
+            status TEXT DEFAULT 'Active',
+            custodian TEXT,
+            notes TEXT,
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS transactions(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        module TEXT,
-        branch_id INTEGER,
-        member_id INTEGER,
-        transaction_type TEXT,
-        amount REAL,
-        reference TEXT,
-        transaction_date TEXT,
-        description TEXT,
-        created_at TEXT NOT NULL
-    );
+        CREATE TABLE IF NOT EXISTS transactions(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            module TEXT,
+            branch_id INTEGER,
+            member_id INTEGER,
+            transaction_type TEXT,
+            amount REAL,
+            reference TEXT,
+            transaction_date TEXT,
+            description TEXT,
+            created_at TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS audit_log(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT,
-        module TEXT,
-        action TEXT,
-        details TEXT,
-        timestamp TEXT
-    );
-    """)
+        CREATE TABLE IF NOT EXISTS audit_log(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            module TEXT,
+            action TEXT,
+            details TEXT,
+            timestamp TEXT
+        );
+        """
+    )
     c.commit()
     c.close()
 
     migrations = {
-        "users": {
-            "password_hash": "TEXT", "full_name": "TEXT", "role": "TEXT",
-            "module": "TEXT", "branch_id": "INTEGER",
-            "active": "INTEGER DEFAULT 1", "created_at": "TEXT",
-        },
-        "branches": {
-            "code": "TEXT", "name": "TEXT", "module": "TEXT",
-            "location": "TEXT", "manager": "TEXT", "phone": "TEXT",
-            "status": "TEXT DEFAULT 'Active'", "created_at": "TEXT",
-        },
         "members": {
-            "member_no": "TEXT", "full_name": "TEXT", "phone": "TEXT",
-            "sex": "TEXT", "join_date": "TEXT", "module": "TEXT",
-            "branch_id": "INTEGER",
             "regular_contribution": "REAL DEFAULT 0",
+            "contribution_frequency": "TEXT DEFAULT 'Monthly'",
+            "target_round_contribution": "REAL DEFAULT 0",
             "trust_score": "REAL DEFAULT 0.5",
             "status": "TEXT DEFAULT 'Active'",
-            "address": "TEXT", "notes": "TEXT", "created_at": "TEXT",
+            "address": "TEXT",
+            "notes": "TEXT",
+            "created_at": "TEXT",
         },
         "equb_rounds": {
-            "branch_id": "INTEGER", "round_no": "INTEGER",
+            "branch_id": "INTEGER",
+            "round_no": "INTEGER",
             "contribution_amount": "REAL DEFAULT 0",
-            "start_date": "TEXT", "draw_date": "TEXT",
+            "start_date": "TEXT",
+            "draw_date": "TEXT",
             "expected_members": "INTEGER DEFAULT 0",
             "total_pool": "REAL DEFAULT 0",
-            "winner_member_id": "INTEGER", "status": "TEXT DEFAULT 'Open'",
+            "winner_member_id": "INTEGER",
+            "status": "TEXT DEFAULT 'Open'",
             "created_at": "TEXT",
         },
         "contributions": {
-            "member_id": "INTEGER", "module": "TEXT", "round_id": "INTEGER",
-            "amount": "REAL DEFAULT 0", "contribution_date": "TEXT",
-            "status": "TEXT DEFAULT 'Paid'", "reference": "TEXT",
-            "payment_method": "TEXT", "notes": "TEXT", "created_at": "TEXT",
+            "member_id": "INTEGER",
+            "module": "TEXT",
+            "round_id": "INTEGER",
+            "amount": "REAL DEFAULT 0",
+            "contribution_date": "TEXT",
+            "status": "TEXT DEFAULT 'Paid'",
+            "reference": "TEXT",
+            "payment_method": "TEXT",
+            "notes": "TEXT",
+            "created_at": "TEXT",
+        },
+        "users": {
+            "password_hash": "TEXT",
+            "full_name": "TEXT",
+            "role": "TEXT",
+            "module": "TEXT",
+            "branch_id": "INTEGER",
+            "active": "INTEGER DEFAULT 1",
+            "created_at": "TEXT",
+        },
+        "branches": {
+            "code": "TEXT",
+            "name": "TEXT",
+            "module": "TEXT",
+            "location": "TEXT",
+            "manager": "TEXT",
+            "phone": "TEXT",
+            "status": "TEXT DEFAULT 'Active'",
+            "created_at": "TEXT",
         },
         "iddir_events": {
-            "branch_id": "INTEGER", "event_type": "TEXT",
-            "member_id": "INTEGER", "event_date": "TEXT",
-            "description": "TEXT", "requested_amount": "REAL DEFAULT 0",
+            "branch_id": "INTEGER",
+            "event_type": "TEXT",
+            "member_id": "INTEGER",
+            "event_date": "TEXT",
+            "description": "TEXT",
+            "requested_amount": "REAL DEFAULT 0",
             "approved_amount": "REAL DEFAULT 0",
-            "status": "TEXT DEFAULT 'Pending'", "payment_date": "TEXT",
-            "reference": "TEXT", "created_at": "TEXT",
+            "status": "TEXT DEFAULT 'Pending'",
+            "payment_date": "TEXT",
+            "reference": "TEXT",
+            "created_at": "TEXT",
         },
         "properties": {
-            "branch_id": "INTEGER", "property_code": "TEXT",
-            "property_type": "TEXT", "description": "TEXT",
-            "location": "TEXT", "acquisition_date": "TEXT",
+            "branch_id": "INTEGER",
+            "property_code": "TEXT",
+            "property_type": "TEXT",
+            "description": "TEXT",
+            "location": "TEXT",
+            "acquisition_date": "TEXT",
             "acquisition_cost": "REAL DEFAULT 0",
             "current_value": "REAL DEFAULT 0",
-            "status": "TEXT DEFAULT 'Active'", "custodian": "TEXT",
-            "notes": "TEXT", "created_at": "TEXT",
+            "status": "TEXT DEFAULT 'Active'",
+            "custodian": "TEXT",
+            "notes": "TEXT",
+            "created_at": "TEXT",
         },
         "transactions": {
-            "module": "TEXT", "branch_id": "INTEGER", "member_id": "INTEGER",
-            "transaction_type": "TEXT", "amount": "REAL DEFAULT 0",
-            "reference": "TEXT", "transaction_date": "TEXT",
-            "description": "TEXT", "created_at": "TEXT",
+            "module": "TEXT",
+            "branch_id": "INTEGER",
+            "member_id": "INTEGER",
+            "transaction_type": "TEXT",
+            "amount": "REAL DEFAULT 0",
+            "reference": "TEXT",
+            "transaction_date": "TEXT",
+            "description": "TEXT",
+            "created_at": "TEXT",
         },
         "audit_log": {
-            "username": "TEXT", "module": "TEXT", "action": "TEXT",
-            "details": "TEXT", "timestamp": "TEXT",
+            "username": "TEXT",
+            "module": "TEXT",
+            "action": "TEXT",
+            "details": "TEXT",
+            "timestamp": "TEXT",
         },
     }
 
@@ -514,6 +450,7 @@ def init_db():
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_properties_code ON properties(property_code)",
         "CREATE INDEX IF NOT EXISTS idx_members_module_branch ON members(module,branch_id)",
         "CREATE INDEX IF NOT EXISTS idx_contributions_round ON contributions(round_id)",
+        "CREATE INDEX IF NOT EXISTS idx_contributions_member ON contributions(member_id)",
     ]:
         try:
             sql(statement)
@@ -525,14 +462,23 @@ def init_db():
         ("admin",),
         fetch=True,
     )
+
     if not admin:
         sql(
-            """INSERT INTO users
+            """
+            INSERT INTO users
             (username,password_hash,full_name,role,module,branch_id,active,created_at)
-            VALUES(?,?,?,?,?,?,?,?)""",
+            VALUES(?,?,?,?,?,?,?,?)
+            """,
             (
-                "admin", pwd_hash("admin123"), "IDFS Administrator",
-                "Administrator", "Portal", None, 1, now()
+                "admin",
+                pwd_hash("admin123"),
+                "IDFS Administrator",
+                "Administrator",
+                "Portal",
+                None,
+                1,
+                now(),
             ),
         )
 
@@ -544,18 +490,23 @@ def init_db():
     ]
 
     for code, name, module, location, manager in seed:
-        existing = sql(
+        if not sql(
             "SELECT id FROM branches WHERE code=?",
-            (code,), fetch=True
-        )
-        if not existing:
+            (code,),
+            fetch=True,
+        ):
             sql(
-                """INSERT INTO branches
+                """
+                INSERT INTO branches
                 (code,name,module,location,manager,phone,status,created_at)
-                VALUES(?,?,?,?,?,?,?,?)""",
+                VALUES(?,?,?,?,?,?,?,?)
+                """,
                 (code, name, module, location, manager, "", "Active", now()),
             )
 
+# ============================================================
+# COMMON HELPERS
+# ============================================================
 
 def header(title, subtitle=""):
     st.markdown(
@@ -573,30 +524,39 @@ def branches(module=None):
     if module:
         return sql(
             "SELECT * FROM branches WHERE module=? ORDER BY name",
-            (module,), fetch=True
+            (module,),
+            fetch=True,
         )
     return sql(
         "SELECT * FROM branches ORDER BY module,name",
-        fetch=True
+        fetch=True,
     )
 
 
 def members(module=None, branch=None):
     where = []
     params = []
+
     if module:
         where.append("m.module=?")
         params.append(module)
+
     if branch:
         where.append("m.branch_id=?")
         params.append(branch)
+
     where_sql = " WHERE " + " AND ".join(where) if where else ""
+
     return sql(
-        """SELECT m.*, b.code AS branch_code, b.name AS branch_name
-           FROM members m
-           LEFT JOIN branches b ON m.branch_id=b.id"""
-        + where_sql + " ORDER BY m.full_name",
-        tuple(params), fetch=True
+        """
+        SELECT m.*, b.code AS branch_code, b.name AS branch_name
+        FROM members m
+        LEFT JOIN branches b ON m.branch_id=b.id
+        """
+        + where_sql
+        + " ORDER BY m.full_name",
+        tuple(params),
+        fetch=True,
     )
 
 
@@ -611,67 +571,43 @@ def download(data, filename):
 
 
 # ============================================================
-# AUTHENTICATION
+# MODULE 2: AUTHENTICATION
 # ============================================================
 
 def login():
-    st.markdown('<div class="login-shell">', unsafe_allow_html=True)
-
-    left, right = st.columns([1.08, 0.92], gap="large")
-
-    with left:
-        st.markdown("""
-        <div class="login-brand-panel">
-            <div class="idfs-emblem">🏦</div>
-            <div class="login-brand">IDFS</div>
-            <div class="login-expansion">
+    st.markdown(
+        """
+        <div style="text-align:center;margin-top:6vh">
+            <div style="font-size:2.5rem;font-weight:800;color:#163A5F">
+                IDFS
+            </div>
+            <div style="color:#64748B;font-size:1.05rem">
                 Indigenous Digital Financial System
             </div>
-            <div class="login-tagline">
-                A digital platform for transparent, secure and
-                community-centered financial administration.
-            </div>
-            <div class="login-feature">
-                ✓ Equb savings and rotating rounds<br>
-                ✓ Contribution and payment management<br>
-                ✓ Contribution-weighted probability demonstration<br>
-                ✓ Iddir community risk-sharing and support<br>
-                ✓ Branch, member, property and transaction management<br>
-                ✓ Reports, analytics and audit trail
+            <div style="color:#64748B;margin-top:.5rem">
+                Secure Web Platform
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True,
+    )
 
-    with right:
-        st.markdown("""
-        <div class="login-right">
-            <div class="login-heading">Welcome back</div>
-            <div class="login-caption">
-                Sign in to access the IDFS management platform.
-            </div>
-        """, unsafe_allow_html=True)
+    _, center, _ = st.columns([1, 2, 1])
 
+    with center:
+        st.markdown("### Sign in")
         with st.form("login_form"):
-            username = st.text_input(
-                "Username",
-                placeholder="Enter your username",
-            )
-            password = st.text_input(
-                "Password",
-                type="password",
-                placeholder="Enter your password",
-            )
+            username = st.text_input("Username", placeholder="Enter your username")
+            password = st.text_input("Password", type="password")
             submitted = st.form_submit_button(
-                "Sign in securely  →",
-                type="primary",
-                use_container_width=True,
+                "Sign in", type="primary", use_container_width=True
             )
 
         if submitted:
-            username_clean = username.strip()
             row = sql(
                 "SELECT * FROM users WHERE username=? AND active=1",
-                (username_clean,), fetch=True
+                (username.strip(),),
+                fetch=True,
             )
 
             if row and check_pwd(password, row[0]["password_hash"]):
@@ -690,54 +626,44 @@ def login():
             else:
                 st.error("Invalid username or password.")
 
-        st.markdown("""
-        <div class="login-security">
-            🔒 Passwords are stored using PBKDF2-HMAC-SHA256 hashing.
-            This prototype is intended for technology-transfer
-            demonstration and controlled development use.
-        </div>
-        <div class="login-demo">
-            <b>Demo access:</b> admin / admin123
-        </div>
-        <div class="login-copyright">
-            © 2026 Aksum University<br>
-            Technology Transfer Project Team<br>
-            Indigenous Digital Financial System (IDFS)<br>
-            All rights reserved.
-        </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
+        st.info("Demonstration account: admin / admin123")
 
 # ============================================================
-# DASHBOARD
+# MODULE 3: EXECUTIVE DASHBOARD
 # ============================================================
 
 def dashboard():
     header(
         "IDFS Executive Dashboard",
-        "Integrated Equb savings and Iddir community risk-sharing platform",
+        "Integrated Equb savings, contribution analytics and Iddir community risk-sharing platform",
     )
 
     active_members = sql(
         "SELECT COUNT(*) AS n FROM members WHERE status='Active'",
-        fetch=True
+        fetch=True,
     )[0]["n"]
+
     active_branches = sql(
         "SELECT COUNT(*) AS n FROM branches WHERE status='Active'",
-        fetch=True
+        fetch=True,
     )[0]["n"]
+
     equb_savings = sql(
-        """SELECT COALESCE(SUM(amount),0) AS n FROM contributions
-           WHERE module='Equb' AND status='Paid'""",
-        fetch=True
+        """
+        SELECT COALESCE(SUM(amount),0) AS n
+        FROM contributions
+        WHERE module='Equb' AND status='Paid'
+        """,
+        fetch=True,
     )[0]["n"]
+
     iddir_property = sql(
-        """SELECT COALESCE(SUM(current_value),0) AS n FROM properties
-           WHERE status='Active'""",
-        fetch=True
+        """
+        SELECT COALESCE(SUM(current_value),0) AS n
+        FROM properties
+        WHERE status='Active'
+        """,
+        fetch=True,
     )[0]["n"]
 
     a, b, c, d = st.columns(4)
@@ -749,39 +675,67 @@ def dashboard():
     st.divider()
 
     x, y = st.columns(2)
+
     with x:
-        st.markdown("""
-        <div class="section-card">
-            <div class="module-label">IDFS Equb</div>
-            Community savings, regular contributions, rounds,
-            payment records and contribution-weighted probability
-            demonstration.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div class="section-card">
+                <div class="module-label">IDFS Equb</div>
+                Member registration includes planned contribution amount,
+                monthly/round frequency, contribution history, weighted
+                contribution scoring, probability estimation and transparent
+                demonstration selection.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
     with y:
-        st.markdown("""
-        <div class="section-card">
-            <div class="module-label">IDFS Iddir</div>
-            Community risk sharing for funeral, wedding, holiday,
-            emergency, medical and family support, together with
-            property management.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div class="section-card">
+                <div class="module-label">IDFS Iddir</div>
+                Community risk sharing for funeral, wedding, holiday,
+                emergency, medical and family support, with property and
+                transaction management.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    st.subheader("Equb Statistical Indicators")
+
+    p = equb_probability_table()
+
+    if not p.empty:
+        a, b, c, d = st.columns(4)
+        a.metric("Equb Members", len(p))
+        b.metric("Planned Contribution", money(p["Planned_Contribution"].sum()))
+        c.metric("Actual Paid", money(p["Total_Paid"].sum()))
+        d.metric("Average Payment Rate", f"{p['Payment_Rate'].mean():.1%}")
+
+        st.caption(
+            "The weighted contribution score combines planned contribution, "
+            "historical paid contribution and payment consistency. The final "
+            "demonstration probability is normalized across eligible members."
+        )
 
     st.subheader("Recent Activity")
-    activity = df("""
+    activity = df(
+        """
         SELECT timestamp AS Timestamp, username AS User,
                module AS Module, action AS Action, details AS Details
         FROM audit_log ORDER BY id DESC LIMIT 15
-    """)
+        """
+    )
+
     if activity.empty:
         st.info("No activity has been recorded yet.")
     else:
         st.dataframe(activity, use_container_width=True, hide_index=True)
 
-
 # ============================================================
-# BRANCH MANAGEMENT
+# MODULE 4: BRANCH MANAGEMENT
 # ============================================================
 
 def branch_page():
@@ -789,15 +743,19 @@ def branch_page():
         "Module 4: Branch Management",
         "Bank-style branch structure for Equb and Iddir",
     )
+
     t1, t2 = st.tabs(["Branch Directory", "Register Branch"])
 
     with t1:
-        x = df("""
+        x = df(
+            """
             SELECT code AS Branch_Code, name AS Branch_Name,
                    module AS Module, location AS Location,
-                   manager AS Manager, phone AS Phone, status AS Status
+                   manager AS Manager, phone AS Phone,
+                   status AS Status
             FROM branches ORDER BY module,name
-        """)
+            """
+        )
         st.dataframe(x, use_container_width=True, hide_index=True)
         if not x.empty:
             download(x, "idfs_branches.csv")
@@ -812,22 +770,27 @@ def branch_page():
             manager = a.text_input("Manager")
             phone = b.text_input("Phone")
             status = b.selectbox("Status", ["Active", "Inactive"])
+
             submitted = st.form_submit_button(
-                "Register Branch", type="primary",
-                use_container_width=True
+                "Register Branch", type="primary", use_container_width=True
             )
+
             if submitted:
                 if not code.strip() or not name.strip():
                     st.error("Branch code and branch name are required.")
                 else:
                     try:
                         sql(
-                            """INSERT INTO branches
+                            """
+                            INSERT INTO branches
                             (code,name,module,location,manager,phone,status,created_at)
-                            VALUES(?,?,?,?,?,?,?,?)""",
-                            (code.strip(), name.strip(), module,
-                             location.strip(), manager.strip(),
-                             phone.strip(), status, now())
+                            VALUES(?,?,?,?,?,?,?,?)
+                            """,
+                            (
+                                code.strip(), name.strip(), module,
+                                location.strip(), manager.strip(),
+                                phone.strip(), status, now(),
+                            ),
                         )
                         audit("Created branch", module, code.strip())
                         st.success("Branch registered.")
@@ -835,37 +798,48 @@ def branch_page():
                     except sqlite3.IntegrityError:
                         st.error("Branch code already exists.")
 
-
 # ============================================================
-# MEMBER MANAGEMENT
+# MODULE 5: MEMBER MANAGEMENT
 # ============================================================
 
 def member_page():
     header(
         "Module 5: Member Management",
-        "Registration, regular contribution and membership monitoring",
+        "Registration now captures planned contribution amount and contribution frequency",
     )
+
     t1, t2, t3 = st.tabs(
         ["Directory", "Register Member", "Member Profile"]
     )
 
     with t1:
         module_filter = st.selectbox("Module Filter", ["All"] + MODULES)
-        base = """
-            SELECT m.member_no AS Member_No, m.full_name AS Full_Name,
-                   m.module AS Module, COALESCE(b.name,'') AS Branch,
-                   COALESCE(m.phone,'') AS Phone, m.join_date AS Join_Date,
-                   COALESCE(m.regular_contribution,0) AS Regular_Contribution,
-                   COALESCE(m.trust_score,0.5) AS Trust_Score,
-                   m.status AS Status
-            FROM members m LEFT JOIN branches b ON m.branch_id=b.id
+
+        base_query = """
+            SELECT
+                m.member_no AS Member_No,
+                m.full_name AS Full_Name,
+                m.module AS Module,
+                COALESCE(b.name,'') AS Branch,
+                COALESCE(m.phone,'') AS Phone,
+                m.join_date AS Join_Date,
+                COALESCE(m.regular_contribution,0) AS Planned_Contribution,
+                COALESCE(m.contribution_frequency,'Monthly') AS Frequency,
+                COALESCE(m.target_round_contribution,0) AS Round_Contribution,
+                COALESCE(m.trust_score,0.5) AS Trust_Score,
+                m.status AS Status
+            FROM members m
+            LEFT JOIN branches b ON m.branch_id=b.id
         """
-        x = df(
-            base + (" ORDER BY m.module,m.full_name"
-                     if module_filter == "All"
-                     else " WHERE m.module=? ORDER BY m.full_name"),
-            () if module_filter == "All" else (module_filter,)
-        )
+
+        if module_filter == "All":
+            x = df(base_query + " ORDER BY m.module,m.full_name")
+        else:
+            x = df(
+                base_query + " WHERE m.module=? ORDER BY m.full_name",
+                (module_filter,),
+            )
+
         st.dataframe(x, use_container_width=True, hide_index=True)
         if not x.empty:
             download(x, "idfs_members.csv")
@@ -873,27 +847,63 @@ def member_page():
     with t2:
         with st.form("member_form"):
             a, b = st.columns(2)
+
             member_no = a.text_input("Member Number", placeholder="M-0001")
             full_name = b.text_input("Full Name")
             phone = a.text_input("Phone")
             sex = b.selectbox("Sex", ["Not specified", "Female", "Male", "Other"])
+
             module = a.selectbox("Module", MODULES)
+
             branch_list = branches(module)
-            branch_options = [f"{q['code']} | {q['name']}" for q in branch_list]
-            selected_branch = b.selectbox("Branch", branch_options) if branch_options else None
-            contribution = a.number_input(
-                "Regular Contribution / Monthly Amount (ETB)",
-                min_value=0.0, value=0.0, step=50.0
+            branch_options = [
+                f"{item['code']} | {item['name']}" for item in branch_list
+            ]
+
+            if branch_options:
+                selected_branch = b.selectbox("Branch", branch_options)
+            else:
+                selected_branch = None
+                b.info("No branch exists for this module yet.")
+
+            st.markdown("#### Contribution Plan")
+
+            c1, c2, c3 = st.columns(3)
+
+            contribution = c1.number_input(
+                "Regular Contribution Amount (ETB)",
+                min_value=0.0,
+                value=1000.0 if module == "Equb" else 0.0,
+                step=50.0,
             )
-            trust_score = b.slider("Initial Trust Score", 0.0, 1.0, 0.5, 0.01)
+
+            frequency = c2.selectbox(
+                "Contribution Frequency",
+                ["Monthly", "Per Round", "Weekly", "Custom"],
+            )
+
+            round_contribution = c3.number_input(
+                "Target Round Contribution (ETB)",
+                min_value=0.0,
+                value=0.0,
+                step=50.0,
+                help="Expected contribution for one Equb round. If zero, the regular contribution is used.",
+            )
+
+            trust_score = b.slider(
+                "Initial Trust Score",
+                0.0, 1.0, 0.5, 0.01,
+            )
+
             join_date = a.date_input("Join Date", date.today())
             status = b.selectbox("Status", ["Active", "Inactive", "Suspended"])
             address = a.text_input("Address")
             notes = b.text_area("Notes")
+
             submitted = st.form_submit_button(
-                "Register Member", type="primary",
-                use_container_width=True
+                "Register Member", type="primary", use_container_width=True
             )
+
             if submitted:
                 if not member_no.strip() or not full_name.strip():
                     st.error("Member number and full name are required.")
@@ -901,15 +911,25 @@ def member_page():
                     branch_id = None
                     if branch_options and selected_branch:
                         branch_id = branch_list[branch_options.index(selected_branch)]["id"]
+
                     try:
                         sql(
-                            """INSERT INTO members
-                            (member_no,full_name,phone,sex,join_date,module,branch_id,
-                             regular_contribution,trust_score,status,address,notes,created_at)
-                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                            (member_no.strip(), full_name.strip(), phone, sex,
-                             str(join_date), module, branch_id, contribution,
-                             trust_score, status, address, notes, now())
+                            """
+                            INSERT INTO members
+                            (
+                                member_no,full_name,phone,sex,join_date,
+                                module,branch_id,regular_contribution,
+                                contribution_frequency,target_round_contribution,
+                                trust_score,status,address,notes,created_at
+                            )
+                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                            """,
+                            (
+                                member_no.strip(), full_name.strip(), phone, sex,
+                                str(join_date), module, branch_id, contribution,
+                                frequency, round_contribution, trust_score,
+                                status, address, notes, now(),
+                            ),
                         )
                         audit("Registered member", module, member_no.strip())
                         st.success("Member registered.")
@@ -921,60 +941,196 @@ def member_page():
         member_list = members()
         if not member_list:
             st.info("No members registered yet.")
+            return
+
+        labels = [
+            f"{item['member_no']} | {item['full_name']}"
+            for item in member_list
+        ]
+        selected = st.selectbox("Select Member", labels)
+        member = member_list[labels.index(selected)]
+
+        history = member_contribution_history(member["id"])
+
+        a, b, c, d = st.columns(4)
+        a.metric("Module", member["module"])
+        b.metric("Planned Contribution", money(member["regular_contribution"]))
+        c.metric("Total Paid", money(history["Total_Paid"].sum()))
+        d.metric("Payment Rate", f"{history['Payment_Rate'].mean():.1%}" if not history.empty else "0.0%")
+
+        profile = pd.DataFrame([{
+            "Member Number": member["member_no"],
+            "Full Name": member["full_name"],
+            "Module": member["module"],
+            "Branch": member["branch_name"] or "",
+            "Phone": member["phone"] or "",
+            "Join Date": member["join_date"] or "",
+            "Frequency": member["contribution_frequency"] or "Monthly",
+            "Planned Contribution": member["regular_contribution"] or 0,
+            "Target Round Contribution": member["target_round_contribution"] or 0,
+            "Trust Score": member["trust_score"] or 0.5,
+            "Status": member["status"],
+        }])
+
+        st.dataframe(profile, use_container_width=True, hide_index=True)
+
+        st.subheader("Contribution History")
+        if history.empty:
+            st.info("No contribution records yet.")
         else:
-            labels = [f"{q['member_no']} | {q['full_name']}" for q in member_list]
-            selected = st.selectbox("Select Member", labels)
-            member = member_list[labels.index(selected)]
-            a, b, c = st.columns(3)
-            a.metric("Module", member["module"])
-            b.metric("Regular Contribution", money(member["regular_contribution"]))
-            c.metric("Trust Score", f"{float(member['trust_score'] or .5):.2f}")
-            profile = pd.DataFrame([{
-                "Member Number": member["member_no"],
-                "Full Name": member["full_name"],
-                "Module": member["module"],
-                "Branch": member["branch_name"] or "",
-                "Phone": member["phone"] or "",
-                "Join Date": member["join_date"] or "",
-                "Status": member["status"],
-                "Address": member["address"] or "",
-                "Notes": member["notes"] or "",
-            }])
-            st.dataframe(profile, use_container_width=True, hide_index=True)
-
+            st.dataframe(history, use_container_width=True, hide_index=True)
 
 # ============================================================
-# EQUb
+# EQUb STATISTICAL ENGINE
 # ============================================================
 
-def probability_table():
+def member_contribution_history(member_id, round_id=None):
+    where = ["c.member_id=?", "c.module='Equb'"]
+    params = [member_id]
+
+    if round_id is not None:
+        where.append("c.round_id=?")
+        params.append(round_id)
+
+    return df(
+        f"""
+        SELECT
+            c.id AS Contribution_ID,
+            c.round_id AS Round_ID,
+            COALESCE(r.round_no,0) AS Round_No,
+            c.amount AS Amount,
+            c.contribution_date AS Date,
+            c.status AS Status,
+            CASE
+                WHEN COALESCE(r.contribution_amount,0) > 0
+                THEN MIN(c.amount / r.contribution_amount, 1.0)
+                ELSE 0
+            END AS Payment_Rate,
+            c.payment_method AS Payment_Method,
+            c.reference AS Reference
+        FROM contributions c
+        LEFT JOIN equb_rounds r ON c.round_id=r.id
+        WHERE {' AND '.join(where)}
+        ORDER BY c.id DESC
+        """,
+        tuple(params),
+    )
+
+
+def equb_probability_table(round_id=None, trust_weight=0.20):
+    """
+    Research demonstration model.
+
+    For member i:
+      Planned_i = registered regular contribution / round target
+      Actual_i  = total historical paid contribution
+      Consistency_i = mean payment rate across recorded rounds
+
+    A contribution-performance score is formed from a weighted mean:
+      S_i = 0.50*normalized planned contribution
+          + 0.30*normalized historical paid contribution
+          + 0.20*payment consistency
+
+    Trust is incorporated separately:
+      A_i = (1-trust_weight)*S_i + trust_weight*Trust_i
+
+    Final probability:
+      P_i = A_i / sum(A_j)
+
+    This is a transparent demonstration model, not a mandatory
+    Equb governance rule.
+    """
     member_list = members("Equb")
+
     if not member_list:
         return pd.DataFrame()
-    values = [max(float(q["regular_contribution"] or 0), 0) for q in member_list]
-    total = sum(values)
-    probabilities = (
-        [1 / len(member_list)] * len(member_list)
-        if total <= 0 else [v / total for v in values]
-    )
-    return pd.DataFrame([{
-        "Member_No": q["member_no"],
-        "Member": q["full_name"],
-        "Regular_Contribution": values[i],
-        "Trust_Score": float(q["trust_score"] or .5),
-        "Probability": probabilities[i],
-    } for i, q in enumerate(member_list)])
 
+    rows = []
+
+    for m in member_list:
+        hist = member_contribution_history(m["id"], round_id)
+
+        planned = float(
+            m["target_round_contribution"]
+            or m["regular_contribution"]
+            or 0
+        )
+
+        total_paid = (
+            float(hist["Amount"].sum()) if not hist.empty else 0.0
+        )
+
+        if not hist.empty:
+            consistency = float(hist["Payment_Rate"].mean())
+            rounds_paid = int((hist["Status"] == "Paid").sum())
+        else:
+            consistency = 0.0
+            rounds_paid = 0
+
+        rows.append({
+            "Member_ID": m["id"],
+            "Member_No": m["member_no"],
+            "Member": m["full_name"],
+            "Planned_Contribution": planned,
+            "Total_Paid": total_paid,
+            "Payment_Consistency": consistency,
+            "Rounds_Paid": rounds_paid,
+            "Trust_Score": float(m["trust_score"] or 0.5),
+        })
+
+    x = pd.DataFrame(rows)
+
+    def normalize(s):
+        s = pd.to_numeric(s, errors="coerce").fillna(0)
+        total = s.sum()
+        return s / total if total > 0 else pd.Series([1 / len(s)] * len(s), index=s.index)
+
+    x["Planned_Share"] = normalize(x["Planned_Contribution"])
+    x["Paid_Share"] = normalize(x["Total_Paid"])
+
+    # Weighted mean of contribution-related components.
+    x["Contribution_Weighted_Mean"] = (
+        0.50 * x["Planned_Share"]
+        + 0.30 * x["Paid_Share"]
+        + 0.20 * x["Payment_Consistency"]
+    )
+
+    x["Adjusted_Score"] = (
+        (1 - trust_weight) * x["Contribution_Weighted_Mean"]
+        + trust_weight * x["Trust_Score"]
+    )
+
+    score_total = x["Adjusted_Score"].sum()
+
+    if score_total > 0:
+        x["Probability"] = x["Adjusted_Score"] / score_total
+    else:
+        x["Probability"] = 1 / len(x)
+
+    x["Cumulative_Probability"] = x["Probability"].cumsum()
+
+    return x.sort_values("Probability", ascending=False).reset_index(drop=True)
+
+
+# ============================================================
+# MODULE 6: IDFS EQUB
+# ============================================================
 
 def equb():
     header(
         "Module 6: IDFS Equb",
-        "Digital rotating savings, contributions, rounds and transparent selection",
+        "Digital rotating savings, member contribution plans, rounds and transparent statistical selection",
     )
+
     tabs = st.tabs([
-        "Overview", "Rounds", "Contributions",
-        "Weighted Probability", "Draw History"
+        "Overview",
+        "Rounds",
+        "Contributions",
+        "Weighted Probability",
+        "Simulation",
+        "Draw History",
     ])
+
     with tabs[0]:
         equb_overview()
     with tabs[1]:
@@ -984,162 +1140,320 @@ def equb():
     with tabs[3]:
         equb_probability()
     with tabs[4]:
+        equb_simulation()
+    with tabs[5]:
         equb_history()
 
 
 def equb_overview():
     active_members = sql(
-        "SELECT COUNT(*) AS n FROM members WHERE module='Equb' AND status='Active'",
-        fetch=True
+        """
+        SELECT COUNT(*) AS n FROM members
+        WHERE module='Equb' AND status='Active'
+        """,
+        fetch=True,
     )[0]["n"]
+
     total_contributions = sql(
-        """SELECT COALESCE(SUM(amount),0) AS n FROM contributions
-           WHERE module='Equb' AND status='Paid'""", fetch=True
+        """
+        SELECT COALESCE(SUM(amount),0) AS n
+        FROM contributions
+        WHERE module='Equb' AND status='Paid'
+        """,
+        fetch=True,
     )[0]["n"]
-    rounds = sql("SELECT COUNT(*) AS n FROM equb_rounds", fetch=True)[0]["n"]
+
+    rounds = sql(
+        "SELECT COUNT(*) AS n FROM equb_rounds",
+        fetch=True,
+    )[0]["n"]
+
     pools = sql(
         "SELECT COALESCE(SUM(total_pool),0) AS n FROM equb_rounds",
-        fetch=True
+        fetch=True,
     )[0]["n"]
+
     a, b, c, d = st.columns(4)
     a.metric("Active Members", active_members)
     b.metric("Total Contributions", money(total_contributions))
     c.metric("Rounds", rounds)
     d.metric("Recorded Pools", money(pools))
-    st.markdown("""
-    <div class="section-card">
-        <div class="module-label">Equb Operating Model</div>
-        Each Equb group or branch can define a regular contribution.
-        Members make payments for rounds. The platform records the
-        round pool and demonstrates a contribution-weighted selection
-        model. Production governance can later add formal eligibility,
-        independent randomization, approvals and reconciliation.
-    </div>
-    """, unsafe_allow_html=True)
+
+    st.subheader("Member Contribution Plan")
+    plan = df(
+        """
+        SELECT
+            m.member_no AS Member_No,
+            m.full_name AS Member,
+            m.contribution_frequency AS Frequency,
+            m.regular_contribution AS Planned_Contribution,
+            m.target_round_contribution AS Round_Target,
+            COALESCE(SUM(c.amount),0) AS Total_Paid
+        FROM members m
+        LEFT JOIN contributions c
+          ON m.id=c.member_id
+         AND c.module='Equb'
+         AND c.status='Paid'
+        WHERE m.module='Equb'
+        GROUP BY m.id
+        ORDER BY m.full_name
+        """
+    )
+    if not plan.empty:
+        st.dataframe(plan, use_container_width=True, hide_index=True)
+
+    st.markdown(
+        """
+        <div class="section-card">
+            <div class="module-label">Equb Operating Model</div>
+            The member record stores the intended contribution amount.
+            The round stores the standard round contribution. Actual
+            payments are recorded separately. The statistical layer then
+            uses both planned and realized contributions together with
+            payment consistency and an optional trust component.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def equb_rounds():
     st.subheader("Equb Round Management")
+
     branch_list = branches("Equb")
     if not branch_list:
         st.warning("Create an Equb branch first.")
         return
-    names = [f"{q['code']} | {q['name']}" for q in branch_list]
+
+    branch_names = [f"{x['code']} | {x['name']}" for x in branch_list]
+
     with st.form("round_form"):
-        branch_choice = st.selectbox("Equb Branch", names)
+        branch_choice = st.selectbox("Equb Branch", branch_names)
+
         a, b = st.columns(2)
         round_no = a.number_input("Round Number", min_value=1, value=1, step=1)
-        amount = b.number_input("Contribution per Member (ETB)", min_value=0.0, value=1000.0, step=100.0)
+        amount = b.number_input(
+            "Standard Contribution per Member / Round (ETB)",
+            min_value=0.0, value=1000.0, step=100.0,
+        )
         expected_members = a.number_input("Expected Members", min_value=1, value=10, step=1)
         start_date = b.date_input("Start Date", date.today())
         draw_date = a.date_input("Expected Draw Date", date.today())
         status = b.selectbox("Status", ["Open", "Closed", "Completed", "Cancelled"])
-        submitted = st.form_submit_button("Create Round", type="primary", use_container_width=True)
+
+        submitted = st.form_submit_button(
+            "Create Round", type="primary", use_container_width=True
+        )
+
         if submitted:
-            branch = branch_list[names.index(branch_choice)]
-            try:
+            branch = branch_list[branch_names.index(branch_choice)]
+            existing = sql(
+                """
+                SELECT id FROM equb_rounds
+                WHERE branch_id=? AND round_no=?
+                """,
+                (branch["id"], int(round_no)),
+                fetch=True,
+            )
+
+            if existing:
+                st.error("That round number already exists for this branch.")
+            else:
                 sql(
-                    """INSERT INTO equb_rounds
-                    (branch_id,round_no,contribution_amount,start_date,draw_date,
-                     expected_members,total_pool,status,created_at)
-                    VALUES(?,?,?,?,?,?,?,?,?)""",
-                    (branch["id"], int(round_no), amount, str(start_date),
-                     str(draw_date), int(expected_members), 0, status, now())
+                    """
+                    INSERT INTO equb_rounds
+                    (
+                        branch_id,round_no,contribution_amount,
+                        start_date,draw_date,expected_members,
+                        total_pool,status,created_at
+                    )
+                    VALUES(?,?,?,?,?,?,?,?,?)
+                    """,
+                    (
+                        branch["id"], int(round_no), amount,
+                        str(start_date), str(draw_date),
+                        int(expected_members), 0, status, now(),
+                    ),
                 )
-                audit("Created Equb round", "Equb", f"{branch['code']} round {round_no}")
+                audit(
+                    "Created Equb round",
+                    "Equb",
+                    f"{branch['code']} round {round_no}",
+                )
                 st.success("Round created.")
                 st.rerun()
-            except sqlite3.IntegrityError:
-                st.error("That round already exists for this branch.")
-    x = df("""
-        SELECT r.round_no AS Round_No, b.code AS Branch,
-               r.contribution_amount AS Contribution,
-               r.expected_members AS Expected_Members,
-               r.total_pool AS Total_Pool, r.start_date AS Start_Date,
-               r.draw_date AS Draw_Date, r.status AS Status,
-               COALESCE(m.full_name,'') AS Winner
-        FROM equb_rounds r JOIN branches b ON r.branch_id=b.id
+
+    x = df(
+        """
+        SELECT
+            r.round_no AS Round_No,
+            b.code AS Branch,
+            r.contribution_amount AS Contribution_Per_Round,
+            r.expected_members AS Expected_Members,
+            r.total_pool AS Total_Pool,
+            r.start_date AS Start_Date,
+            r.draw_date AS Draw_Date,
+            r.status AS Status,
+            COALESCE(m.full_name,'') AS Winner
+        FROM equb_rounds r
+        JOIN branches b ON r.branch_id=b.id
         LEFT JOIN members m ON r.winner_member_id=m.id
         ORDER BY r.id DESC
-    """)
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
 
 
 def equb_contributions():
     st.subheader("Equb Contribution Recording")
-    rounds = sql("""
+
+    rounds = sql(
+        """
         SELECT r.*, b.code AS branch_code
-        FROM equb_rounds r JOIN branches b ON r.branch_id=b.id
-        WHERE r.status IN ('Open','Closed') ORDER BY r.id DESC
-    """, fetch=True)
+        FROM equb_rounds r
+        JOIN branches b ON r.branch_id=b.id
+        WHERE r.status IN ('Open','Closed')
+        ORDER BY r.id DESC
+        """,
+        fetch=True,
+    )
+
     if not rounds:
         st.info("Create an open Equb round first.")
         return
-    labels = [
-        f"{q['branch_code']} | Round {q['round_no']} | {money(q['contribution_amount'])}"
-        for q in rounds
+
+    round_labels = [
+        f"{r['branch_code']} | Round {r['round_no']} | {money(r['contribution_amount'])}"
+        for r in rounds
     ]
+
     with st.form("contribution_form"):
-        round_choice = st.selectbox("Round", labels)
-        current_round = rounds[labels.index(round_choice)]
+        round_choice = st.selectbox("Round", round_labels)
+        current_round = rounds[round_labels.index(round_choice)]
+
         member_list = members("Equb", current_round["branch_id"])
+
         if not member_list:
             st.warning("No Equb members are registered in this branch.")
             st.form_submit_button("Record Contribution", disabled=True)
             return
-        member_labels = [f"{q['member_no']} | {q['full_name']}" for q in member_list]
+
+        member_labels = [
+            f"{m['member_no']} | {m['full_name']}" for m in member_list
+        ]
         member_choice = st.selectbox("Member", member_labels)
-        amount = st.number_input(
-            "Amount (ETB)", min_value=0.0,
-            value=float(current_round["contribution_amount"] or 0),
-            step=50.0
+        member = member_list[member_labels.index(member_choice)]
+
+        suggested = float(
+            member["target_round_contribution"]
+            or member["regular_contribution"]
+            or current_round["contribution_amount"]
+            or 0
         )
+
+        amount = st.number_input(
+            "Actual Contribution Amount (ETB)",
+            min_value=0.0,
+            value=suggested,
+            step=50.0,
+            help="This is the actual amount paid for this round.",
+        )
+
         contribution_date = st.date_input("Contribution Date", date.today())
         payment_method = st.selectbox(
             "Payment Method",
-            ["Cash", "Bank Transfer", "Mobile Money", "Other"]
+            ["Cash", "Bank Transfer", "Mobile Money", "Other"],
         )
         reference = st.text_input("Payment Reference")
         notes = st.text_area("Notes")
+
         submitted = st.form_submit_button(
             "Record Contribution", type="primary", use_container_width=True
         )
+
         if submitted:
-            member = member_list[member_labels.index(member_choice)]
-            try:
-                sql(
-                    """INSERT INTO contributions
-                    (member_id,module,round_id,amount,contribution_date,status,
-                     reference,payment_method,notes,created_at)
-                    VALUES(?,?,?,?,?,?,?,?,?,?)""",
-                    (member["id"], "Equb", current_round["id"], amount,
-                     str(contribution_date), "Paid", reference,
-                     payment_method, notes, now())
+            duplicate = sql(
+                """
+                SELECT id FROM contributions
+                WHERE member_id=? AND round_id=?
+                """,
+                (member["id"], current_round["id"]),
+                fetch=True,
+            )
+
+            if duplicate:
+                st.error(
+                    "This member already has a contribution record for this round."
                 )
+            else:
+                sql(
+                    """
+                    INSERT INTO contributions
+                    (
+                        member_id,module,round_id,amount,
+                        contribution_date,status,reference,
+                        payment_method,notes,created_at
+                    )
+                    VALUES(?,?,?,?,?,?,?,?,?,?)
+                    """,
+                    (
+                        member["id"], "Equb", current_round["id"], amount,
+                        str(contribution_date), "Paid", reference,
+                        payment_method, notes, now(),
+                    ),
+                )
+
                 total = sql(
-                    """SELECT COALESCE(SUM(amount),0) AS n FROM contributions
-                       WHERE round_id=? AND status='Paid'""",
-                    (current_round["id"],), fetch=True
+                    """
+                    SELECT COALESCE(SUM(amount),0) AS n
+                    FROM contributions
+                    WHERE round_id=? AND status='Paid'
+                    """,
+                    (current_round["id"],),
+                    fetch=True,
                 )[0]["n"]
-                sql("UPDATE equb_rounds SET total_pool=? WHERE id=?",
-                    (total, current_round["id"]))
-                audit("Recorded Equb contribution", "Equb",
-                      f"{member['member_no']} {amount}")
+
+                sql(
+                    "UPDATE equb_rounds SET total_pool=? WHERE id=?",
+                    (total, current_round["id"]),
+                )
+
+                audit(
+                    "Recorded Equb contribution",
+                    "Equb",
+                    f"{member['member_no']} | round {current_round['round_no']} | {amount}",
+                )
                 st.success("Contribution recorded.")
                 st.rerun()
-            except sqlite3.IntegrityError:
-                st.error("Contribution could not be recorded.")
-    x = df("""
-        SELECT c.contribution_date AS Date, m.member_no AS Member_No,
-               m.full_name AS Member, b.code AS Branch,
-               r.round_no AS Round, c.amount AS Amount,
-               c.status AS Status, c.reference AS Reference,
-               c.payment_method AS Payment_Method
-        FROM contributions c JOIN members m ON c.member_id=m.id
+
+    x = df(
+        """
+        SELECT
+            c.contribution_date AS Date,
+            m.member_no AS Member_No,
+            m.full_name AS Member,
+            b.code AS Branch,
+            r.round_no AS Round,
+            r.contribution_amount AS Planned_Round_Amount,
+            c.amount AS Actual_Paid,
+            CASE
+                WHEN r.contribution_amount > 0
+                THEN MIN(c.amount / r.contribution_amount,1.0)
+                ELSE 0
+            END AS Payment_Rate,
+            c.status AS Status,
+            c.reference AS Reference,
+            c.payment_method AS Payment_Method
+        FROM contributions c
+        JOIN members m ON c.member_id=m.id
         JOIN equb_rounds r ON c.round_id=r.id
         JOIN branches b ON r.branch_id=b.id
-        WHERE c.module='Equb' ORDER BY c.id DESC LIMIT 500
-    """)
+        WHERE c.module='Equb'
+        ORDER BY c.id DESC
+        LIMIT 500
+        """
+    )
+
     st.dataframe(x, use_container_width=True, hide_index=True)
     if not x.empty:
         download(x, "idfs_equb_contributions.csv")
@@ -1147,57 +1461,174 @@ def equb_contributions():
 
 def equb_probability():
     st.subheader("Contribution-Weighted Probability Engine")
-    x = probability_table()
+
+    round_rows = sql(
+        """
+        SELECT r.*, b.code AS branch_code
+        FROM equb_rounds r
+        JOIN branches b ON r.branch_id=b.id
+        ORDER BY r.id DESC
+        """,
+        fetch=True,
+    )
+
+    options = ["All recorded Equb contributions"] + [
+        f"{r['branch_code']} | Round {r['round_no']} | {money(r['contribution_amount'])}"
+        for r in round_rows
+    ]
+
+    selected = st.selectbox("Probability Basis", options)
+    round_id = None
+    if selected != options[0]:
+        round_id = round_rows[options.index(selected) - 1]["id"]
+
+    trust_weight = st.slider(
+        "Trust Weight in Final Score",
+        0.0, 0.50, 0.20, 0.05,
+        help="The remaining weight is assigned to contribution-based performance.",
+    )
+
+    x = equb_probability_table(round_id, trust_weight)
+
     if x.empty:
         st.info("Register Equb members first.")
         return
-    if x["Regular_Contribution"].sum() <= 0:
-        st.warning("All regular contributions are zero; equal probabilities are used.")
+
+    a, b, c, d = st.columns(4)
+    a.metric("Members", len(x))
+    b.metric("Planned Contribution", money(x["Planned_Contribution"].sum()))
+    c.metric("Total Paid", money(x["Total_Paid"].sum()))
+    d.metric("Average Consistency", f"{x['Payment_Consistency'].mean():.1%}")
+
     display = x.copy()
-    display["Regular_Contribution"] = display["Regular_Contribution"].map(lambda v: f"{v:,.2f}")
-    display["Trust_Score"] = display["Trust_Score"].map(lambda v: f"{v:.2f}")
-    display["Probability"] = display["Probability"].map(lambda v: f"{v:.2%}")
-    st.dataframe(display, use_container_width=True, hide_index=True)
-    a, b = st.columns(2)
-    a.metric("Total Regular Contribution", money(x["Regular_Contribution"].sum()))
-    b.metric("Equb Members", len(x))
-    if st.button("Run Weighted Demonstration", type="primary", use_container_width=True):
-        member_list = members("Equb")
-        selected = random.choices(member_list, weights=x["Probability"].tolist(), k=1)[0]
-        st.success(
-            f"Selected demonstration member: {selected['full_name']} ({selected['member_no']})"
+
+    for col in [
+        "Planned_Contribution",
+        "Total_Paid",
+    ]:
+        display[col] = display[col].map(lambda v: f"{v:,.2f}")
+
+    for col in [
+        "Payment_Consistency",
+        "Trust_Score",
+        "Contribution_Weighted_Mean",
+        "Adjusted_Score",
+        "Probability",
+        "Cumulative_Probability",
+    ]:
+        display[col] = display[col].map(
+            lambda v: f"{float(v):.2%}"
         )
-        audit("Executed weighted probability demonstration",
-              "Equb", selected["member_no"])
-    st.markdown("""
-    <div class="section-card">
-        <div class="module-label">Model Note</div>
-        For member i, the demonstration probability is proportional
-        to positive regular contribution Cᵢ: pᵢ = Cᵢ / ΣCⱼ.
-        If all contributions are zero, equal probabilities are assigned.
-        This is a research prototype and does not by itself define the
-        governance rules of every Equb.
-    </div>
-    """, unsafe_allow_html=True)
+
+    st.dataframe(display, use_container_width=True, hide_index=True)
+
+    st.markdown(
+        """
+        <div class="section-card">
+            <div class="module-label">Weighted-Mean Model</div>
+            <b>Contribution score</b> combines three dimensions:
+            50% normalized planned contribution + 30% normalized
+            historical paid contribution + 20% payment consistency.
+            The resulting score is then combined with the member trust
+            score according to the selected trust weight. Finally,
+            the adjusted scores are normalized to obtain the selection
+            probabilities.
+            <br><br>
+            This provides a transparent mathematical demonstration;
+            actual Equb rules can later specify the approved weights,
+            eligibility restrictions and independent draw governance.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if not x.empty:
+        download(x, "idfs_equb_weighted_probability.csv")
+
+
+def equb_simulation():
+    st.subheader("Weighted Selection Simulation")
+
+    x = equb_probability_table()
+
+    if x.empty:
+        st.info("Register Equb members first.")
+        return
+
+    n = st.number_input(
+        "Number of simulations",
+        min_value=1,
+        max_value=10000,
+        value=1000,
+        step=100,
+    )
+
+    if st.button(
+        "Run Monte Carlo Demonstration",
+        type="primary",
+        use_container_width=True,
+    ):
+        members_list = x["Member"].tolist()
+        weights = x["Probability"].tolist()
+
+        results = random.choices(
+            members_list,
+            weights=weights,
+            k=int(n),
+        )
+
+        counts = pd.Series(results).value_counts()
+        sim = x[["Member_No", "Member", "Probability"]].copy()
+        sim["Expected_Probability"] = sim["Probability"]
+        sim["Observed_Probability"] = sim["Member"].map(
+            lambda m: counts.get(m, 0) / n
+        )
+        sim["Difference"] = (
+            sim["Observed_Probability"]
+            - sim["Expected_Probability"]
+        )
+
+        st.dataframe(
+            sim.sort_values("Observed_Probability", ascending=False),
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        st.caption(
+            "Monte Carlo frequencies should approach the model probabilities "
+            "as the number of simulations increases."
+        )
+
+        audit(
+            "Executed Equb Monte Carlo simulation",
+            "Equb",
+            f"{n} simulations",
+        )
 
 
 def equb_history():
-    x = df("""
-        SELECT r.round_no AS Round_No, b.code AS Branch,
-               r.total_pool AS Pool, r.draw_date AS Draw_Date,
-               COALESCE(m.member_no,'') AS Winner_No,
-               COALESCE(m.full_name,'') AS Winner, r.status AS Status
-        FROM equb_rounds r JOIN branches b ON r.branch_id=b.id
+    x = df(
+        """
+        SELECT
+            r.round_no AS Round_No,
+            b.code AS Branch,
+            r.total_pool AS Pool,
+            r.draw_date AS Draw_Date,
+            COALESCE(m.member_no,'') AS Winner_No,
+            COALESCE(m.full_name,'') AS Winner,
+            r.status AS Status
+        FROM equb_rounds r
+        JOIN branches b ON r.branch_id=b.id
         LEFT JOIN members m ON r.winner_member_id=m.id
         ORDER BY r.id DESC
-    """)
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
     if not x.empty:
         download(x, "idfs_equb_rounds.csv")
 
-
 # ============================================================
-# IDDIR
+# MODULE 7: IDFS IDDIR
 # ============================================================
 
 def iddir():
@@ -1205,10 +1636,15 @@ def iddir():
         "Module 7: IDFS Iddir",
         "Community risk sharing for funeral, wedding, holiday, emergency and other approved needs",
     )
+
     tabs = st.tabs([
-        "Overview", "Community Events", "Property Management",
-        "Transactions", "Member History"
+        "Overview",
+        "Community Events",
+        "Property Management",
+        "Transactions",
+        "Member History",
     ])
+
     with tabs[0]:
         iddir_overview()
     with tabs[1]:
@@ -1223,45 +1659,68 @@ def iddir():
 
 def iddir_overview():
     active_members = sql(
-        "SELECT COUNT(*) AS n FROM members WHERE module='Iddir' AND status='Active'",
-        fetch=True
+        """
+        SELECT COUNT(*) AS n FROM members
+        WHERE module='Iddir' AND status='Active'
+        """,
+        fetch=True,
     )[0]["n"]
+
     approved_benefits = sql(
-        """SELECT COALESCE(SUM(approved_amount),0) AS n FROM iddir_events
-           WHERE status IN ('Approved','Paid')""", fetch=True
+        """
+        SELECT COALESCE(SUM(approved_amount),0) AS n
+        FROM iddir_events WHERE status IN ('Approved','Paid')
+        """,
+        fetch=True,
     )[0]["n"]
+
     property_value = sql(
-        "SELECT COALESCE(SUM(current_value),0) AS n FROM properties WHERE status='Active'",
-        fetch=True
+        """
+        SELECT COALESCE(SUM(current_value),0) AS n
+        FROM properties WHERE status='Active'
+        """,
+        fetch=True,
     )[0]["n"]
+
     pending_cases = sql(
-        "SELECT COUNT(*) AS n FROM iddir_events WHERE status='Pending'",
-        fetch=True
+        """
+        SELECT COUNT(*) AS n FROM iddir_events WHERE status='Pending'
+        """,
+        fetch=True,
     )[0]["n"]
+
     a, b, c, d = st.columns(4)
     a.metric("Active Members", active_members)
     b.metric("Approved Support", money(approved_benefits))
     c.metric("Active Property Value", money(property_value))
     d.metric("Pending Cases", pending_cases)
-    st.markdown("""
-    <div class="section-card">
-        <div class="module-label">Iddir Operating Scope</div>
-        The platform records community support cases for funeral,
-        wedding, holiday, emergency, medical, family and other
-        approved purposes. It also maintains community and
-        operational property such as land, buildings, vehicles,
-        equipment and furniture.
-    </div>
-    """, unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div class="section-card">
+            <div class="module-label">Iddir Operating Scope</div>
+            The platform records community support cases for funeral,
+            wedding, holiday, emergency, medical, family and other
+            approved purposes. It also maintains community and
+            operational property such as land, buildings, vehicles,
+            equipment and furniture.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def iddir_events():
     st.subheader("Community Event and Benefit Management")
+
     member_list = members("Iddir")
+
     if not member_list:
         st.info("Register Iddir members first.")
         return
-    member_labels = [f"{q['member_no']} | {q['full_name']}" for q in member_list]
+
+    member_labels = [f"{m['member_no']} | {m['full_name']}" for m in member_list]
+
     with st.form("iddir_event"):
         member_choice = st.selectbox("Member / Beneficiary", member_labels)
         event_type = st.selectbox("Event Type", EVENT_TYPES)
@@ -1271,57 +1730,94 @@ def iddir_events():
         status = st.selectbox("Status", ["Pending", "Approved", "Rejected", "Paid"])
         reference = st.text_input("Case / Payment Reference")
         description = st.text_area("Description")
+
         submitted = st.form_submit_button(
             "Record Community Support Case",
-            type="primary", use_container_width=True
+            type="primary",
+            use_container_width=True,
         )
+
         if submitted:
             member = member_list[member_labels.index(member_choice)]
             payment_date = str(date.today()) if status == "Paid" else None
+
             sql(
-                """INSERT INTO iddir_events
-                (branch_id,event_type,member_id,event_date,description,
-                 requested_amount,approved_amount,status,payment_date,reference,created_at)
-                VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
-                (member["branch_id"], event_type, member["id"], str(event_date),
-                 description, requested, approved, status, payment_date,
-                 reference, now())
+                """
+                INSERT INTO iddir_events
+                (
+                    branch_id,event_type,member_id,event_date,
+                    description,requested_amount,approved_amount,
+                    status,payment_date,reference,created_at
+                )
+                VALUES(?,?,?,?,?,?,?,?,?,?,?)
+                """,
+                (
+                    member["branch_id"], event_type, member["id"],
+                    str(event_date), description, requested, approved,
+                    status, payment_date, reference, now(),
+                ),
             )
+
             if status == "Paid" and approved > 0:
                 sql(
-                    """INSERT INTO transactions
-                    (module,branch_id,member_id,transaction_type,amount,reference,
-                     transaction_date,description,created_at)
-                    VALUES(?,?,?,?,?,?,?,?,?)""",
-                    ("Iddir", member["branch_id"], member["id"],
-                     "Community Benefit Payment", approved, reference,
-                     str(event_date), event_type + " support", now())
+                    """
+                    INSERT INTO transactions
+                    (
+                        module,branch_id,member_id,
+                        transaction_type,amount,reference,
+                        transaction_date,description,created_at
+                    )
+                    VALUES(?,?,?,?,?,?,?,?,?)
+                    """,
+                    (
+                        "Iddir", member["branch_id"], member["id"],
+                        "Community Benefit Payment", approved,
+                        reference, str(event_date),
+                        event_type + " support", now(),
+                    ),
                 )
-            audit("Recorded Iddir support case", "Iddir",
-                  f"{event_type} for {member['member_no']}")
+
+            audit(
+                "Recorded Iddir support case",
+                "Iddir",
+                f"{event_type} for {member['member_no']}",
+            )
             st.success("Support case recorded.")
             st.rerun()
-    x = df("""
-        SELECT e.event_date AS Event_Date, e.event_type AS Event_Type,
-               m.member_no AS Member_No, m.full_name AS Member,
-               e.requested_amount AS Requested,
-               e.approved_amount AS Approved, e.status AS Status,
-               e.reference AS Reference, e.description AS Description
-        FROM iddir_events e JOIN members m ON e.member_id=m.id
+
+    x = df(
+        """
+        SELECT
+            e.event_date AS Event_Date,
+            e.event_type AS Event_Type,
+            m.member_no AS Member_No,
+            m.full_name AS Member,
+            e.requested_amount AS Requested,
+            e.approved_amount AS Approved,
+            e.status AS Status,
+            e.reference AS Reference,
+            e.description AS Description
+        FROM iddir_events e
+        JOIN members m ON e.member_id=m.id
         ORDER BY e.id DESC
-    """)
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
 
 
 def iddir_properties():
     st.subheader("Iddir Property Management")
+
     branch_list = branches("Iddir")
     if not branch_list:
         st.warning("Create an Iddir branch first.")
         return
-    branch_names = [f"{q['code']} | {q['name']}" for q in branch_list]
+
+    branch_names = [f"{x['code']} | {x['name']}" for x in branch_list]
+
     with st.form("property_form"):
         branch_choice = st.selectbox("Iddir Branch", branch_names)
+
         a, b = st.columns(2)
         property_code = a.text_input("Property Code", placeholder="PROP-001")
         property_type = b.selectbox("Property Type", PROPERTY_TYPES)
@@ -1333,9 +1829,11 @@ def iddir_properties():
         status = b.selectbox("Status", ["Active", "Under Maintenance", "Disposed", "Transferred"])
         custodian = a.text_input("Custodian")
         notes = st.text_area("Notes")
+
         submitted = st.form_submit_button(
             "Register Property", type="primary", use_container_width=True
         )
+
         if submitted:
             if not property_code.strip():
                 st.error("Property code is required.")
@@ -1343,58 +1841,82 @@ def iddir_properties():
                 branch = branch_list[branch_names.index(branch_choice)]
                 try:
                     sql(
-                        """INSERT INTO properties
-                        (branch_id,property_code,property_type,description,location,
-                         acquisition_date,acquisition_cost,current_value,status,custodian,notes,created_at)
-                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
-                        (branch["id"], property_code.strip(), property_type,
-                         description, location, str(acquisition_date),
-                         acquisition_cost, current_value, status, custodian,
-                         notes, now())
+                        """
+                        INSERT INTO properties
+                        (
+                            branch_id,property_code,property_type,
+                            description,location,acquisition_date,
+                            acquisition_cost,current_value,status,
+                            custodian,notes,created_at
+                        )
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
+                        """,
+                        (
+                            branch["id"], property_code.strip(), property_type,
+                            description, location, str(acquisition_date),
+                            acquisition_cost, current_value, status,
+                            custodian, notes, now(),
+                        ),
                     )
                     audit("Registered Iddir property", "Iddir", property_code.strip())
                     st.success("Property registered.")
                     st.rerun()
                 except sqlite3.IntegrityError:
                     st.error("Property code already exists.")
-    x = df("""
-        SELECT p.property_code AS Property_Code, p.property_type AS Property_Type,
-               p.description AS Description, COALESCE(b.name,'') AS Branch,
-               p.location AS Location, p.acquisition_date AS Acquisition_Date,
-               p.acquisition_cost AS Acquisition_Cost, p.current_value AS Current_Value,
-               p.status AS Status, p.custodian AS Custodian
-        FROM properties p LEFT JOIN branches b ON p.branch_id=b.id
+
+    x = df(
+        """
+        SELECT
+            p.property_code AS Property_Code,
+            p.property_type AS Property_Type,
+            p.description AS Description,
+            COALESCE(b.name,'') AS Branch,
+            p.location AS Location,
+            p.acquisition_date AS Acquisition_Date,
+            p.acquisition_cost AS Acquisition_Cost,
+            p.current_value AS Current_Value,
+            p.status AS Status,
+            p.custodian AS Custodian
+        FROM properties p
+        LEFT JOIN branches b ON p.branch_id=b.id
         ORDER BY p.id DESC
-    """)
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
     if not x.empty:
         download(x, "idfs_iddir_properties.csv")
 
 
 def iddir_transaction_view():
-    x = df("""
+    x = df(
+        """
         SELECT transaction_date AS Date, transaction_type AS Type,
                amount AS Amount, reference AS Reference,
                description AS Description
-        FROM transactions WHERE module='Iddir' ORDER BY id DESC
-    """)
+        FROM transactions
+        WHERE module='Iddir' ORDER BY id DESC
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
 
 
 def iddir_history():
-    x = df("""
+    x = df(
+        """
         SELECT e.event_date AS Date, e.event_type AS Event,
                m.member_no AS Member_No, m.full_name AS Member,
-               e.requested_amount AS Requested, e.approved_amount AS Approved,
+               e.requested_amount AS Requested,
+               e.approved_amount AS Approved,
                e.status AS Status, e.reference AS Reference
-        FROM iddir_events e JOIN members m ON e.member_id=m.id
+        FROM iddir_events e
+        JOIN members m ON e.member_id=m.id
         ORDER BY e.id DESC
-    """)
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
 
-
 # ============================================================
-# TRANSACTIONS
+# MODULE 8: TRANSACTIONS
 # ============================================================
 
 def transactions():
@@ -1402,126 +1924,248 @@ def transactions():
         "Module 8: Transactions",
         "Unified financial transaction register for the prototype",
     )
+
     with st.form("transaction_form"):
         a, b = st.columns(2)
         module = a.selectbox("Module", MODULES)
         transaction_type = b.selectbox(
             "Transaction Type",
-            ["Deposit", "Contribution", "Community Benefit Payment", "Adjustment", "Other"]
+            [
+                "Deposit", "Contribution",
+                "Community Benefit Payment",
+                "Adjustment", "Other",
+            ],
         )
         amount = a.number_input("Amount (ETB)", min_value=0.0, value=0.0, step=100.0)
         reference = b.text_input("Reference")
         transaction_date = a.date_input("Transaction Date", date.today())
         description = b.text_area("Description")
+
         submitted = st.form_submit_button(
             "Record Transaction", type="primary", use_container_width=True
         )
+
         if submitted:
             sql(
-                """INSERT INTO transactions
-                (module,transaction_type,amount,reference,transaction_date,description,created_at)
-                VALUES(?,?,?,?,?,?,?)""",
-                (module, transaction_type, amount, reference,
-                 str(transaction_date), description, now())
+                """
+                INSERT INTO transactions
+                (
+                    module,transaction_type,amount,reference,
+                    transaction_date,description,created_at
+                )
+                VALUES(?,?,?,?,?,?,?)
+                """,
+                (
+                    module, transaction_type, amount, reference,
+                    str(transaction_date), description, now(),
+                ),
             )
-            audit("Recorded transaction", module, f"{transaction_type}: {amount}")
+            audit(
+                "Recorded transaction",
+                module,
+                f"{transaction_type}: {amount}",
+            )
             st.success("Transaction recorded.")
             st.rerun()
-    x = df("""
+
+    x = df(
+        """
         SELECT transaction_date AS Date, module AS Module,
                transaction_type AS Type, amount AS Amount,
                reference AS Reference, description AS Description
         FROM transactions ORDER BY id DESC LIMIT 1000
-    """)
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
     if not x.empty:
         download(x, "idfs_transactions.csv")
 
-
 # ============================================================
-# REPORTS
+# MODULE 9: REPORTS AND ANALYTICS
 # ============================================================
 
 def reports():
     header(
         "Module 9: Reports and Analytics",
-        "Management information for the IDFS technology-transfer prototype",
+        "Management information and statistical analysis for the IDFS prototype",
     )
+
     report_type = st.selectbox(
         "Report",
         [
-            "Module Summary", "Equb Contributions", "Equb Rounds",
-            "Equb Probability", "Iddir Community Support",
-            "Iddir Properties", "Transactions"
-        ]
+            "Module Summary",
+            "Member Contribution Plans",
+            "Equb Contributions",
+            "Equb Rounds",
+            "Equb Probability",
+            "Equb Simulation",
+            "Iddir Community Support",
+            "Iddir Properties",
+            "Transactions",
+        ],
     )
 
     if report_type == "Module Summary":
         query = """
-            SELECT module AS Module, COUNT(*) AS Members,
-                   ROUND(AVG(regular_contribution),2) AS Average_Regular_Contribution,
-                   ROUND(AVG(trust_score),3) AS Average_Trust
-            FROM members WHERE status='Active' GROUP BY module
+            SELECT module AS Module,
+                   COUNT(*) AS Members,
+                   ROUND(AVG(regular_contribution),2)
+                       AS Average_Planned_Contribution,
+                   ROUND(AVG(trust_score),3)
+                       AS Average_Trust
+            FROM members
+            WHERE status='Active'
+            GROUP BY module
         """
+        x = df(query)
+
+    elif report_type == "Member Contribution Plans":
+        x = df(
+            """
+            SELECT
+                m.member_no AS Member_No,
+                m.full_name AS Member,
+                m.module AS Module,
+                b.code AS Branch,
+                m.contribution_frequency AS Frequency,
+                m.regular_contribution AS Planned_Contribution,
+                m.target_round_contribution AS Round_Target,
+                COALESCE(SUM(c.amount),0) AS Total_Paid
+            FROM members m
+            LEFT JOIN branches b ON m.branch_id=b.id
+            LEFT JOIN contributions c ON m.id=c.member_id
+            GROUP BY m.id
+            ORDER BY m.module,m.full_name
+            """
+        )
+
     elif report_type == "Equb Contributions":
-        query = """
-            SELECT m.member_no AS Member_No, m.full_name AS Member,
-                   COUNT(c.id) AS Payments,
-                   COALESCE(SUM(c.amount),0) AS Total_Paid
-            FROM members m LEFT JOIN contributions c
-              ON m.id=c.member_id AND c.module='Equb' AND c.status='Paid'
-            WHERE m.module='Equb' GROUP BY m.id ORDER BY Total_Paid DESC
-        """
+        x = df(
+            """
+            SELECT
+                m.member_no AS Member_No,
+                m.full_name AS Member,
+                COUNT(c.id) AS Payments,
+                COALESCE(SUM(c.amount),0) AS Total_Paid,
+                COALESCE(AVG(c.amount),0) AS Average_Payment
+            FROM members m
+            LEFT JOIN contributions c
+              ON m.id=c.member_id
+             AND c.module='Equb'
+             AND c.status='Paid'
+            WHERE m.module='Equb'
+            GROUP BY m.id
+            ORDER BY Total_Paid DESC
+            """
+        )
+
     elif report_type == "Equb Rounds":
-        query = """
-            SELECT r.round_no AS Round_No, b.code AS Branch,
-                   r.contribution_amount AS Contribution,
-                   r.expected_members AS Members, r.total_pool AS Total_Pool,
-                   r.start_date AS Start_Date, r.draw_date AS Draw_Date,
-                   r.status AS Status, COALESCE(m.full_name,'') AS Winner
-            FROM equb_rounds r JOIN branches b ON r.branch_id=b.id
+        x = df(
+            """
+            SELECT
+                r.round_no AS Round_No,
+                b.code AS Branch,
+                r.contribution_amount AS Contribution,
+                r.expected_members AS Members,
+                r.total_pool AS Total_Pool,
+                r.start_date AS Start_Date,
+                r.draw_date AS Draw_Date,
+                r.status AS Status,
+                COALESCE(m.full_name,'') AS Winner
+            FROM equb_rounds r
+            JOIN branches b ON r.branch_id=b.id
             LEFT JOIN members m ON r.winner_member_id=m.id
             ORDER BY r.id DESC
-        """
+            """
+        )
+
     elif report_type == "Equb Probability":
-        x = probability_table()
+        x = equb_probability_table()
         if x.empty:
             st.info("Register Equb members first.")
+            return
+
+    elif report_type == "Equb Simulation":
+        x = equb_probability_table()
+        if x.empty:
+            st.info("Register Equb members first.")
+            return
+
+        n = st.number_input(
+            "Simulation Runs",
+            min_value=100,
+            max_value=10000,
+            value=1000,
+            step=100,
+        )
+
+        if st.button("Generate Simulation Report", type="primary"):
+            results = random.choices(
+                x["Member"].tolist(),
+                weights=x["Probability"].tolist(),
+                k=int(n),
+            )
+            counts = pd.Series(results).value_counts()
+
+            x = x[[
+                "Member_No", "Member", "Probability"
+            ]].copy()
+
+            x["Observed_Probability"] = x["Member"].map(
+                lambda m: counts.get(m, 0) / n
+            )
+            x["Simulation_Difference"] = (
+                x["Observed_Probability"] - x["Probability"]
+            )
         else:
-            st.dataframe(x, use_container_width=True, hide_index=True)
-            download(x, "idfs_equb_probability.csv")
-        return
+            st.info("Click Generate Simulation Report.")
+            return
+
     elif report_type == "Iddir Community Support":
-        query = """
-            SELECT event_type AS Event_Type, COUNT(*) AS Cases,
+        x = df(
+            """
+            SELECT event_type AS Event_Type,
+                   COUNT(*) AS Cases,
                    COALESCE(SUM(requested_amount),0) AS Requested,
                    COALESCE(SUM(approved_amount),0) AS Approved
-            FROM iddir_events GROUP BY event_type ORDER BY Approved DESC
-        """
+            FROM iddir_events
+            GROUP BY event_type
+            ORDER BY Approved DESC
+            """
+        )
+
     elif report_type == "Iddir Properties":
-        query = """
-            SELECT property_type AS Property_Type, COUNT(*) AS Assets,
+        x = df(
+            """
+            SELECT property_type AS Property_Type,
+                   COUNT(*) AS Assets,
                    COALESCE(SUM(acquisition_cost),0) AS Acquisition_Cost,
                    COALESCE(SUM(current_value),0) AS Current_Value
-            FROM properties GROUP BY property_type ORDER BY Current_Value DESC
-        """
+            FROM properties
+            GROUP BY property_type
+            ORDER BY Current_Value DESC
+            """
+        )
+
     else:
-        query = """
-            SELECT module AS Module, transaction_type AS Transaction_Type,
+        x = df(
+            """
+            SELECT module AS Module,
+                   transaction_type AS Transaction_Type,
                    COUNT(*) AS Transactions,
                    COALESCE(SUM(amount),0) AS Total_Amount
-            FROM transactions GROUP BY module,transaction_type
+            FROM transactions
+            GROUP BY module,transaction_type
             ORDER BY module,Total_Amount DESC
-        """
+            """
+        )
 
-    x = df(query)
     st.dataframe(x, use_container_width=True, hide_index=True)
     if not x.empty:
         download(x, "idfs_report.csv")
 
-
 # ============================================================
-# AUDIT TRAIL
+# MODULE 10: AUDIT TRAIL
 # ============================================================
 
 def audit_page():
@@ -1529,18 +2173,24 @@ def audit_page():
         "Module 10: Audit Trail",
         "Traceable record of important system activities",
     )
-    x = df("""
-        SELECT timestamp AS Timestamp, username AS Username,
-               module AS Module, action AS Action, details AS Details
+
+    x = df(
+        """
+        SELECT timestamp AS Timestamp,
+               username AS Username,
+               module AS Module,
+               action AS Action,
+               details AS Details
         FROM audit_log ORDER BY id DESC LIMIT 2000
-    """)
+        """
+    )
+
     st.dataframe(x, use_container_width=True, hide_index=True)
     if not x.empty:
         download(x, "idfs_audit.csv")
 
-
 # ============================================================
-# USER ADMINISTRATION
+# MODULE 11: USER ADMINISTRATION
 # ============================================================
 
 def users_page():
@@ -1548,12 +2198,18 @@ def users_page():
         "Module 11: User Administration",
         "Role-based demonstration accounts",
     )
-    x = df("""
-        SELECT username AS Username, full_name AS Full_Name,
-               role AS Role, module AS Module, active AS Active,
+
+    x = df(
+        """
+        SELECT username AS Username,
+               full_name AS Full_Name,
+               role AS Role,
+               module AS Module,
+               active AS Active,
                created_at AS Created_At
         FROM users ORDER BY username
-    """)
+        """
+    )
     st.dataframe(x, use_container_width=True, hide_index=True)
 
     with st.form("user_form"):
@@ -1563,14 +2219,17 @@ def users_page():
         password = a.text_input("Password", type="password")
         role = b.selectbox("Role", ROLES)
         module = a.selectbox("Module", ["Portal"] + MODULES)
+
         branch_list = branches(module) if module in MODULES else []
         branch_options = ["No branch"] + [
-            f"{q['code']} | {q['name']}" for q in branch_list
+            f"{x['code']} | {x['name']}" for x in branch_list
         ]
         branch_choice = b.selectbox("Branch", branch_options)
+
         submitted = st.form_submit_button(
             "Create User", type="primary", use_container_width=True
         )
+
         if submitted:
             if not username.strip():
                 st.error("Username is required.")
@@ -1581,23 +2240,30 @@ def users_page():
             else:
                 branch_id = None
                 if branch_choice != "No branch":
-                    branch_id = branch_list[
-                        branch_options.index(branch_choice) - 1
-                    ]["id"]
+                    index = branch_options.index(branch_choice) - 1
+                    branch_id = branch_list[index]["id"]
+
                 try:
                     sql(
-                        """INSERT INTO users
-                        (username,password_hash,full_name,role,module,branch_id,active,created_at)
-                        VALUES(?,?,?,?,?,?,?,?)""",
-                        (username.strip(), pwd_hash(password),
-                         full_name.strip(), role, module, branch_id, 1, now())
+                        """
+                        INSERT INTO users
+                        (
+                            username,password_hash,full_name,
+                            role,module,branch_id,active,created_at
+                        )
+                        VALUES(?,?,?,?,?,?,?,?)
+                        """,
+                        (
+                            username.strip(), pwd_hash(password),
+                            full_name.strip(), role, module,
+                            branch_id, 1, now(),
+                        ),
                     )
                     audit("Created user", "Portal", username.strip())
                     st.success("User created.")
                     st.rerun()
                 except sqlite3.IntegrityError:
                     st.error("Username already exists.")
-
 
 # ============================================================
 # MAIN APPLICATION
@@ -1611,10 +2277,15 @@ def main():
         return
 
     with st.sidebar:
-        st.markdown("## 🏦 IDFS")
+        st.markdown("## IDFS")
         st.caption("Indigenous Digital Financial System")
-        st.write(f"**User:** {st.session_state.get('full_name','')}")
-        st.write(f"**Role:** {st.session_state.get('role','')}")
+
+        st.write(
+            f"User: **{st.session_state.get('full_name','')}**"
+        )
+        st.write(
+            f"Role: **{st.session_state.get('role','')}**"
+        )
 
         if st.button("Sign out", use_container_width=True):
             audit("Logout")
@@ -1633,14 +2304,11 @@ def main():
             "Reports and Analytics",
             "Audit Trail",
         ]
+
         if st.session_state.get("role") == "Administrator":
             navigation.append("User Administration")
 
         page = st.radio("Navigation", navigation)
-
-        st.divider()
-        st.caption("Aksum University")
-        st.caption("Technology Transfer Project Team • 2026")
 
     pages = {
         "Dashboard": dashboard,
@@ -1653,6 +2321,7 @@ def main():
         "Audit Trail": audit_page,
         "User Administration": users_page,
     }
+
     pages[page]()
 
 
