@@ -93,7 +93,11 @@ def init_db():
         ("admin",pwd_hash("admin123"),"IDFS Administrator","Administrator","Portal",now()))
     if not sql("SELECT id FROM branches LIMIT 1",fetch=True):
         rows=[("EQB-001","IDFS Equb Central Branch","Equb","Aksum","Branch Manager"),("EQB-002","IDFS Equb North Branch","Equb","Shire","Branch Manager"),("IDR-001","IDFS Iddir Central Branch","Iddir","Aksum","Branch Manager"),("IDR-002","IDFS Iddir Community Branch","Iddir","Shire","Branch Manager")]
-        sql("INSERT INTO branches(code,name,module,location,manager,created_at) VALUES(?,?,?,?,?,?)",[(a,b,c,d,e,now()) for a,b,c,d,e in rows],many=True)
+        sql(
+    "INSERT OR IGNORE INTO branches(code,name,module,location,manager,created_at) VALUES(?,?,?,?,?,?)",
+    [(a,b,c,d,e,now()) for a,b,c,d,e in rows],
+    many=True
+)
 
 def header(title,sub=""):
     st.markdown(f'<div class="idfs-header"><h1>{title}</h1><p>{sub}</p></div>',unsafe_allow_html=True)
