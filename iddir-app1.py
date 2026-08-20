@@ -359,7 +359,7 @@ def members():
 # MATHEMATICAL / STATISTICAL MODELS
 # =========================================================
 
-def benefit_eligibility_score(member_id):
+def benefit_eligibility_score(member_id=None):
     """
     Prototype statistical score:
         E_i = w1 C_i + w2 P_i + w3 T_i + w4 M_i
