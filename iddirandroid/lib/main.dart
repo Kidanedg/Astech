@@ -248,30 +248,102 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class DashboardPage extends StatelessWidget {
-  final List<Map<String,dynamic>> members, groups, transactions;
+  final List<Map<String, dynamic>> members;
+  final List<Map<String, dynamic>> groups;
+  final List<Map<String, dynamic>> transactions;
   final VoidCallback onAdd;
-  const DashboardPage({super.key, required this.members, required this.groups, required this.transactions, required this.onAdd});
-  @override Widget build(BuildContext context) {
-    final fund = groups.fold<double>(0, (s,g) => s + (g['fund'] as num).toDouble());
-    return PageScaffold(title: 'Dashboard', actions: [FilledButton.icon(onPressed: onAdd, icon: const Icon(Icons.add), label: const Text('Transaction'))],
+
+  const DashboardPage({
+    super.key,
+    required this.members,
+    required this.groups,
+    required this.transactions,
+    required this.onAdd,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fund = groups.fold<double>(
+      0,
+      (sum, group) => sum + (group['fund'] as num).toDouble(),
+    );
+
+    return PageScaffold(
+      title: 'Dashboard',
+      actions: [
+        FilledButton.icon(
+          onPressed: onAdd,
+          icon: const Icon(Icons.add),
+          label: const Text('Transaction'),
+        ),
+      ],
       children: [
-        const Text('Community overview and operational status.', style: TextStyle(color: Colors.grey)),
+        const Text(
+          'Community overview and operational status.',
+          style: TextStyle(color: Colors.grey),
+        ),
         const SizedBox(height: 18),
-        GridView.count(crossAxisCount: MediaQuery.sizeOf(context).width > 1000 ? 4 : 2, shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), childAspectRatio: 1.7,
+
+        GridView.count(
+          crossAxisCount:
+              MediaQuery.sizeOf(context).width > 1000 ? 4 : 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          childAspectRatio: 1.7,
           children: [
-            StatCard('Members', '${members.length}', Icons.people),
-            StatCard('Iddir Groups', '${groups.length}', Icons.groups),
-            StatCard('Community Fund', 'ETB ${fund.toStringAsFixed(0)}', Icons.savings),
-            StatCard('Transactions', '${transactions.length}', Icons.receipt_long),
-          ]),
+            StatCard(
+              'Members',
+              '${members.length}',
+              Icons.people,
+            ),
+            StatCard(
+              'Iddir Groups',
+              '${groups.length}',
+              Icons.groups,
+            ),
+            StatCard(
+              'Community Fund',
+              'ETB ${fund.toStringAsFixed(0)}',
+              Icons.savings,
+            ),
+            StatCard(
+              'Transactions',
+              '${transactions.length}',
+              Icons.receipt_long,
+            ),
+          ],
+        ),
+
         const SizedBox(height: 20),
-        SectionCard(title: 'Recent Transactions', child: DataTable(columns: const [
-          DataColumn(label: Text('Date')), DataColumn(label: Text('Type')), DataColumn(label: Text('Member')), DataColumn(label: Text('Amount'))
-        ], rows: transactions.take(8).map((x) => DataRow(cells: [
-          DataCell(Text('${x['date']}')), DataCell(Text('${x['type']}')), DataCell(Text('${x['member']}')),
-          DataCell(Text('ETB ${x['amount']}'))
-        ])).toList()))
-      ]);
+
+        SectionCard(
+          title: 'Recent Transactions',
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Date')),
+                DataColumn(label: Text('Type')),
+                DataColumn(label: Text('Member')),
+                DataColumn(label: Text('Amount')),
+              ],
+              rows: transactions.take(8).map((transaction) {
+                return DataRow(
+                  cells: [
+                    DataCell(Text('${transaction['date']}')),
+                    DataCell(Text('${transaction['type']}')),
+                    DataCell(Text('${transaction['member']}')),
+                    DataCell(
+                      Text('ETB ${transaction['amount']}'),
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
