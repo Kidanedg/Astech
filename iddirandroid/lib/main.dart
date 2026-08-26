@@ -293,23 +293,143 @@ class MemberPage extends StatefulWidget {
 }
 class _MemberPageState extends State<MemberPage> {
   void add() {
-    final name=TextEditingController(), phone=TextEditingController(), contribution=TextEditingController(text:'200');
-    String group=widget.groups.first['name'];
-    showDialog(context:context,builder:(_)=>StatefulBuilder(builder:(c,setD)=>AlertDialog(title:const Text('Register Member'),content:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,children:[
-      TextField(controller:name,decoration:const InputDecoration(labelText:'Full name')),
-      TextField(controller:phone,decoration:const InputDecoration(labelText:'Phone')),
-      DropdownButtonFormField<String>(value:group,items:widget.groups.map((g)=>DropdownMenuItem(value:g['name'] as String,child:Text(g['name']))).toList(),onChanged:(v)=>setD(()=>group=v!),decoration:const InputDecoration(labelText:'Iddir group')),
-      TextField(controller:contribution,keyboardType:TextInputType.number,decoration:const InputDecoration(labelText:'Monthly / round contribution (ETB)')),
-    ])),actions:[TextButton(onPressed:()=>Navigator.pop(c),child:const Text('Cancel')),FilledButton(onPressed:(){
-      widget.members.add({'id':'M${100+widget.members.length}','name':name.text,'phone':phone.text,'group':group,'status':'Active','contribution':double.tryParse(contribution.text)??0});
-      widget.onChanged('Registered member ${name.text}'); setState((){}); Navigator.pop(c);
-    },child:const Text('Register'))]));
+    final name = TextEditingController();
+    final phone = TextEditingController();
+    final contribution = TextEditingController(text: '200');
+
+    String group = widget.groups.first['name'];
+
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (c, setD) => AlertDialog(
+          title: const Text('Register Member'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: name,
+                  decoration: const InputDecoration(
+                    labelText: 'Full name',
+                  ),
+                ),
+                TextField(
+                  controller: phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone',
+                  ),
+                ),
+                DropdownButtonFormField<String>(
+                  initialValue: group,
+                  items: widget.groups
+                      .map(
+                        (g) => DropdownMenuItem<String>(
+                          value: g['name'] as String,
+                          child: Text(g['name']),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) {
+                    if (v != null) {
+                      setD(() {
+                        group = v;
+                      });
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Iddir group',
+                  ),
+                ),
+                TextField(
+                  controller: contribution,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Monthly / round contribution (ETB)',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(c),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                widget.members.add({
+                  'id': 'M${100 + widget.members.length}',
+                  'name': name.text,
+                  'phone': phone.text,
+                  'group': group,
+                  'status': 'Active',
+                  'contribution':
+                      double.tryParse(contribution.text) ?? 0,
+                });
+
+                widget.onChanged(
+                  'Registered member ${name.text}',
+                );
+
+                setState(() {});
+                Navigator.pop(c);
+              },
+              child: const Text('Register'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
-  @override Widget build(BuildContext context)=>PageScaffold(title:'Member Management',actions:[FilledButton.icon(onPressed:add,icon:const Icon(Icons.person_add),label:const Text('Register Member'))],children:[
-    SectionCard(title:'Members',child:SingleChildScrollView(scrollDirection:Axis.horizontal,child:DataTable(columns:const[
-      DataColumn(label:Text('ID')),DataColumn(label:Text('Name')),DataColumn(label:Text('Phone')),DataColumn(label:Text('Group')),DataColumn(label:Text('Contribution')),DataColumn(label:Text('Status'))
-    ],rows:widget.members.map((m)=>DataRow(cells:[DataCell(Text('${m['id']}')),DataCell(Text('${m['name']}')),DataCell(Text('${m['phone']}')),DataCell(Text('${m['group']}')),DataCell(Text('ETB ${m['contribution']}')),DataCell(Text('${m['status']}'))])).toList())))
-  ]);
+
+  @override
+  Widget build(BuildContext context) {
+    return PageScaffold(
+      title: 'Member Management',
+      actions: [
+        FilledButton.icon(
+          onPressed: add,
+          icon: const Icon(Icons.person_add),
+          label: const Text('Register Member'),
+        ),
+      ],
+      children: [
+        SectionCard(
+          title: 'Members',
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('ID')),
+                DataColumn(label: Text('Name')),
+                DataColumn(label: Text('Phone')),
+                DataColumn(label: Text('Group')),
+                DataColumn(label: Text('Contribution')),
+                DataColumn(label: Text('Status')),
+              ],
+              rows: widget.members
+                  .map(
+                    (m) => DataRow(
+                      cells: [
+                        DataCell(Text('${m['id']}')),
+                        DataCell(Text('${m['name']}')),
+                        DataCell(Text('${m['phone']}')),
+                        DataCell(Text('${m['group']}')),
+                        DataCell(
+                          Text('ETB ${m['contribution']}'),
+                        ),
+                        DataCell(Text('${m['status']}')),
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class GroupPage extends StatelessWidget {
