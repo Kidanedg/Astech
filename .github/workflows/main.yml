@@ -1,0 +1,45 @@
+name: Create Iddir Flutter Project
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Create Flutter project
+        run: |
+          mv iddirandroid /tmp/old_iddirandroid
+          flutter create --org com.kidanean iddirandroid
+
+      - name: Restore existing main.dart
+        run: |
+          cp /tmp/old_iddirandroid/lib/main.dart iddirandroid/lib/main.dart
+
+      - name: Get dependencies
+        working-directory: iddirandroid
+        run: flutter pub get
+
+      - name: Check Flutter project
+        working-directory: iddirandroid
+        run: flutter analyze
+
+      - name: Build Android APK
+        working-directory: iddirandroid
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: iddir-android-apk
+          path: iddirandroid/build/app/outputs/flutter-apk/app-release.apk
