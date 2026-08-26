@@ -34,9 +34,12 @@ jobs:
         run: |
           cp /tmp/old_iddirandroid/lib/main.dart iddirandroid/lib/main.dart
 
-      - name: Get dependencies
+            - name: Get dependencies
         working-directory: iddirandroid
         run: flutter pub get
+
+      - name: Remove generated Flutter test
+        run: rm -rf iddirandroid/test
 
       - name: Analyze Flutter project
         working-directory: iddirandroid
