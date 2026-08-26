@@ -27,19 +27,31 @@ jobs:
 
       - name: Create Flutter project
         run: |
-          mv iddirandroid /tmp/old_iddirandroid
-          flutter create --org com.kidanean iddirandroid
+          if [ -d "iddirandroid" ]; then
+            mv iddirandroid /tmp/old_iddirandroid
+          fi
+
+          flutter create \
+            --org com.kidanean \
+            --project-name iddirandroid \
+            iddirandroid
 
       - name: Restore existing main.dart
         run: |
-          cp /tmp/old_iddirandroid/lib/main.dart iddirandroid/lib/main.dart
+          if [ -f "/tmp/old_iddirandroid/lib/main.dart" ]; then
+            cp /tmp/old_iddirandroid/lib/main.dart iddirandroid/lib/main.dart
+          else
+            echo "ERROR: Existing main.dart was not found."
+            exit 1
+          fi
 
-            - name: Get dependencies
+      - name: Get dependencies
         working-directory: iddirandroid
         run: flutter pub get
 
       - name: Remove generated Flutter test
-        run: rm -rf iddirandroid/test
+        run: |
+          rm -rf iddirandroid/test
 
       - name: Analyze Flutter project
         working-directory: iddirandroid
@@ -53,8 +65,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add iddirandroid
+
           git commit -m "Create complete Flutter project for Iddir Android app" || echo "No changes to commit"
+
           git push
 
       - name: Upload APK
@@ -62,3 +77,4 @@ jobs:
         with:
           name: iddir-android-apk
           path: iddirandroid/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
